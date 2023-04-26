@@ -1,0 +1,229 @@
+[[{]]
+# Performance metrics [[{postrgesql,performance]]
+@[https://dzone.com/articles/postgresql-performance-metrics]
+- Database Connection Parameters
+
+  - If number of active connections running concurrently is high
+    it can be convinient to terminate sessions in idle state slowing down the server.
+
+  - monitoring replicas to check they are not out of sync.
+
+- Throughput Parameters:
+  - It is a composite of I/O speed, CPU speed, parallel capabilities of the machine,
+    and efficiency of the OS.
+
+- Locks Parameters:
+  pg_locks displays locks granted and processes waiting for locks.
+
+- Resource Parameters:
+  - Disk and Index Usage
+  - Memory Parameters
+  - WAL Parameters
+
+Items       Parameters              Table/Query
+
+Connections Max. number             SELECT count(*)
+            of connections           FROM pg_stat_activity;
+
+            DB Conflict count       pg_stat_database_conflicts
+
+            commits number          xact_commit in pg_stat_database View
+
+            sessions number         count of session from
+                                    pg_stat_user_functions View
+
+            Vacuums                 last_vacuum
+                                    last_autovacuum
+                                    vacuum_count
+                                    autovacuum_count
+                                    autoanalyze_count from
+                                      pg_stat_all_tables View
+
+
+            Checkpoints and         pg_stat_bgwriter shows
+            bgwriter statistics     metrics to flush data in
+                                    memory (buffers) to
+                                    disk. It can do this in
+                                    3 different ways
+
+
+                                    buffers_checkpoint: # buffers written during
+                                                          checkpoints
+                                    buffers_clean : # buffers written by background
+                                                      writer
+                                    buffers_backend: # scheduled checkpoints performed
+                                    buffers_alloc : Total  allocated buffer #
+
+Replication    Hosts with           SELECT
+               replication delay      write_location - sent_location AS write_lag,
+                                     flush_location - write_location AS flush_lag,
+                                     replay_location - flush_location AS replay_lag
+                                     FROM pg_stat_replication;
+
+               Replication lag       SELECT
+               in bytes                pg_current_wal_lsn() - confirmed_flush_lsn
+                                     FROM pg_replication_slots;
+
+
+               Lag in seconds        SELECT
+                                       EXTRACT(
+                                         EPOCH
+                                        FROM (
+                                          now() - pg_last_xact_replay_timestamp())
+                                       ) as lag
+
+               Checkpoints           checkpoints_req  : checkpoint # requested
+                                     checkpoints_timed: checkpoint # scheduled
+
+
+               Status of physical    pg_stat_replication
+               replication
+
+
+               Inactive replication  SELECT count(*)
+               slots                  FROM pg_replication_slots
+                                      WHERE NOT active;
+
+               Replica info          SELECT
+                                       usename,application_name,clien
+                                       t_hostname,state,sent_location
+                                       ,write_location,replay_location
+                                     FROM pg_stat_replication
+
+Throughput     Sequential scans vs   seq_scan
+               index scans           seq_tup_read
+                                     idx_scan
+                                     idx_tup_fetch from
+                                       pg_stat_all_tables View
+
+               Top Function calls    SELECT backend_xid
+                                      FROM pg_stat_activity
+
+
+
+               running backend #     SELECT count(*)
+                                      FROM pg_stat_activity;
+
+Locks          Locks by lock mode    lock from the pg_locks view
+
+               Deadlocks/database    Deadlocks from
+                                      pg_stat_database View
+
+               Backend waiting       SELECT count(*)
+                on locks              FROM pg_stat_activity
+                                      WHERE wait_event = 'Lock';
+
+               Backend idle in       SELECT count(*)
+                transactions          FROM pg_stat_activity
+                                      WHERE state = 'idle in transaction';
+
+               Session holding or   SELECT *
+                awaiting each lock  FROM pg_locks pl
+                                      LEFT JOIN pg_stat_activity psa
+                                      ON pl.pid = psa.pid;
+
+Resource       Tables with most     heap_blks_read from
+Utilization    disk usage            pg_statio_all_tables View
+
+               Tables with most     n_live_tup from
+                live rows            pg_stat_all_tables View
+
+
+               Most frequent        Idx_scan from
+                scanned index        pg_stat_all_tables?
+
+
+               dead rows            higher number of dead rows
+                                     (n_dead_tup in the
+                                     pg_stat_user_tables view)
+
+               Temp bytes           temp_bytes from
+                                      pg_stat_database View
+
+
+
+               Active user count or pg_stat_activity view will
+               current activity per have one row per server process
+               process
+               (pg_stat_activity)
+
+
+
+               DB commits           xact_commit from
+                                      pg_stat_database View
+
+
+               Live and Dead        SELECT schemaname, relname,
+               tuples               n_live_tup, n_dead_tup,
+                                    last_autovacuum
+                                    FROM pg_stat_all_tables
+                                    ORDER BY
+                                      n_dead_tup/(n_live_tup *
+                                      current_setting('autovacuum_va
+                                      cuum_scale_factor')::float8 +
+                                      current_setting('autovacuum_va
+                                      cuum_threshold')::float8)
+                                      DESC
+
+               Local block info       SELECT t2.rolname,
+                                      t3.datname, queryid, calls,
+                                      total_time / 1000 as
+                                      total_time_seconds, min_time
+                                      / 1000 as min_time_seconds,
+                                      max_time / 1000 as
+                                      max_time_seconds, mean_time /
+                                      1000 as mean_time_seconds,
+                                      stddev_time / 1000 as
+                                      stddev_time_seconds, rows,
+                                      shared_blks_hit,
+                                      shared_blks_read,
+                                      shared_blks_dirtied,
+                                      shared_blks_written,
+                                      local_blks_hit,
+                                      local_blks_read,
+                                      local_blks_dirtied,
+                                      local_blks_written,
+                                      temp_blks_read,
+                                      temp_blks_written,
+                                      blk_read_time / 1000 as
+                                      blk_read_time_seconds,
+                                      blk_write_time / 1000 as
+                                      blk_write_time_seconds FROM
+                                      pg_stat_statements t1 JOIN
+                                      pg_roles t2 ON
+                                      (t1.userid=t2.oid) JOIN
+                                      pg_database t3 ON
+                                      (t1.dbid=t3.oid) WHERE
+                                      t2.rolname != 'rdsadmin'
+
+
+
+WAL Buffers    Shared/WAL/CLOG        SELECT current_database()
+               Checkpoint buffers       datname, schemaname, relname,
+                                        heap_blks_read, heap_blks_hit,
+                                        idx_blks_read, idx_blks_hit,
+                                        toast_blks_read, toast_blks_hit,
+                                        tidx_blks_read, tidx_blks_hit
+                                      FROM pg_statio_user_tables
+
+
+               Database cache         blks_hit from
+               usage ratio:             pg_stat_database View
+               formula
+               SUM (blks_hit)/
+                  SUM (blks_read).
+
+               WAL count ready        SELECT count(*)
+                to be archieved        FROM pg_ls_dir('pg_xlog/archive_status')
+                                       WHERE pg_ls_dir ~ '^[0-9A-F]{24}.ready$';
+
+
+               Disk Space by DDBB     SELECT
+                                        pg_database.datname,
+                                        pg_database_size(pg_database.datname)
+                                         as size_bytes
+                                      FROM pg_database
+
+ *working python script  @ Github:*
+@[https://github.com/forprem/pg-metrics/blob/master/pg_connect.py]
+[[}]]
