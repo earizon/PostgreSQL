@@ -1,0 +1,882 @@
+# TODO/Un-ordered notes [[{ PM.TODO ]]
+
+## pghero 
+* <https://github.com/ankane/pghero>   [[{01_PM.low_code]]
+* performance dashboard for Postgres
+[[}]]
+
+# What are these slow COMMIT in my PostgreSQL logs?
+https://yhuelf.github.io/2021/09/30/pg_stat_statements_bottleneck.html
+Linux, perf flame: What are these slow COMMIT in my PostgreSQL logs? | Frédéric Yhuel, PostgreSQL DBA
+https://yhuelf.github.io/2021/09/30/pg_stat_statements_bottleneck.html
+
+# Parallel queries  [[{performance]]
+@[https://www.percona.com/blog/2019/02/21/parallel-queries-in-postgresql/]
+[[}]]
+
+# Citus: Scale-Out Clustering and Sharding [[{data.analytics,architecture.real_time,architecture.scalability,01_PM.TODO}]]
+@[https://www.xaprb.com/blog/citus/]
+@[https://github.com/citusdata/citus]
+@[https://www.citusdata.com]
+Distributed PostgreSQL extension for multi-tenant and
+real-time analytics workloads
+
+- cluster of databases with Citus extension (sharding for PostgreSQL).
+  Configured High-Availability for the coordinator node.
+
+
+
+# Citus Sharding Extension
+I wrote yesterday about Vitess, a scale-out sharding solution for
+MySQL. Another similar product is Citus, which is a scale-out
+sharding solution for PostgreSQL. Similar to Vitess, Citus is
+successfully being used to solve problems of scale and performance
+that have previously required a lot of custom-built middleware.
+
+Citus solves the following problems for users:
+- Sharding. Citus handles all of the sharding, so applications do not
+  need to be shard-aware.
+- Multi-tenancy. Applications built to colocate multiple customers’
+  databases on a shared cluster—like most SaaS applications—are
+  called multi-tenant. Sharding, scaling, resharding, rebalancing, and
+  so on are common pain points in modern SaaS platforms, all of which
+  Citus solves.
+- Analytics. Citus is not exclusively an analytical database, but it
+  certainly is deployed for distributed, massively parallel analytics
+  workloads a lot. Part of this is because Citus supports complex
+  queries, building upon Postgres’s own very robust SQL support.
+  Citus can shard queries that do combinations of things like
+  distributed GROUP BY and JOIN together.
+
+· Citus is not middleware: it’s an extension to Postgres that
+  turns a collection of nodes into a clustered database. This means
+  that all of the query rewriting, scatter-gather MPP processing, etc
+  happens within the PostgreSQL server process, so it can take
+  advantage of lots of PostgreSQL’s existing codebase and
+  functionality.
+
+· Citus runs on standard, unpatched PostgreSQL servers. The only
+  modification is installing the extensions into the server. This is a
+  unique and extremely important advantage: most clustered databases
+  that are derived from another database inevitably lag behind and get
+  stuck on an old version of the original database, unable to keep up
+  with the grueling workload of constantly refactoring to build on new
+  releases. Not so for Citus, which doesn’t fork Postgres—it
+  extends it with Postgres’s own extension mechanisms. This means
+  that Citus is positioned to continue innovating on its own software,
+  while continuing to benefit from the strong progress that the
+  PostgreSQL community is delivering on a regular cadence too.
+
+
+# performance tips and tricks -------------------------------------------------
+@[https://marmelab.com/blog/2019/02/13/how-to-improve-postgres-performances.html]
+
+- Investigating on database performance is a long journey, but to sum up, you should:
+  - Track your database to gather logs
+  - Extract the most relevant information
+  - Identify the issues
+  - Address them one by one
+
+# Reindex [[{performance.troubleshooting]]
+* <https://www.enterprisedb.com/edb-docs/d/postgresql/reference/manual/13.1/sql-reindex.html>
+[[}]]
+
+[[{data.analytics,01_PM.TODO]]
+# PostgreSQL for Analytics Apps
+@[https://www.infoq.com/vendorcontent/show.action?vcr=4727]
+https://aws.amazon.com/rds/postgresql/
+https://aws.amazon.com/rds/redshift/
+[[}]]
+
+[[{data.analytics,01_PM.TODO]]
+# Intelligent Analytics with PostgreSQL
+TODO: (Video) InfoQ: Developing an Intelligent Analytics App with PostgreSQL
+
+@[https://www.infoq.com/vendorcontent/show.action?vcr=4675]
+
+- Azure Database for PostgreSQL brings together the community edition
+  database engine and capabilities of a fully managed service - so you
+  can focus on your apps instead of having to manage a database.
+[[}]]
+
+[[{tool,qa,01_PM.TODO]]
+## Liquibase
+@[http://www.liquibase.org/]
+Source control for the DDBB schema.
+- Eliminate errors and delays when releasing databases.
+- Deploys and Rollback changes for specific versions without needing
+  to know what has already been deployed.
+- Deploy database and application changes together so they always
+  stay in sync.
+- Supports code branching and merging
+- Supports multiple developers
+- Supports multiple database types
+- Supports XML, YAML, JSON and SQL formats
+- Supports context-dependent logic
+- Cluster-safe database upgrades
+- Generate Database change documentation
+- Generate Database "diffs"
+- Run through your build process, embedded in your application or on demand
+- Automatically generate SQL scripts for DBA code review
+- Does not require a live database connection
+
+Java Maven Plugin:
+@[https://docs.liquibase.com/tools-integrations/maven/home.html]
+[[}]]
+
+[[{architecture.cloud]]
+# AWS Serverless PostgreSQL
+@[https://aws.amazon.com/blogs/aws/amazon-aurora-postgresql-serverless-now-generally-available/]
+
+- "serverless" relational database service (RDS) in AWS Aurora.
+- Automatically starts, scales, and shuts down database capacity
+- per-second billing for applications with less predictable usage patterns.
+
+- It's a *different implementation of the standard versions of these open-source databases.
+
+From the RDS console:
+- select the Amazon Aurora database engine PostgreSQL
+- set new DB cluster identifier, specification of credentials,
+- set capacity:
+  - minimum and maximum capacity units for their database, in terms of Aurora Capacity Units (ACUs)
+    – a combination of processing and memory capacity. Besides defining the ACUs, users can also
+      determine when compute power should stop after a certain amount of idle time.
+
+*how capacity settings will work once the database is available*
+- client apps transparently connect to a proxy fleet
+  that routes the workload to a pool of resources that
+  are automatically scaled.
+- Scaling is very fast because resources are "warm" and
+  ready to be added to serve your requests.
+
+- Minimum storage: 10GB, will automatically grow up to 64 TB
+ (based on the database usage) in 10GB increments
+ *with no impact to database performance*
+
+*pricing models*
+- On-Demand Instance Pricing: pay by hour, no long-term commitments
+- Reserved  Instance Pricing: steady-state database workloads
+
+*Cost*
+@[https://aws.amazon.com/rds/aurora/pricing/]
+[[}]]
+
+[[{dev_lang.java,performance.troubleshooting]]
+# Reactive java Client
+@[https://github.com/vietj/reactive-pg-client]
+@[https://github.com/eclipse-vertx/vertx-sql-client/tree/3.8/vertx-pg-client]
+
+High performance reactive PostgreSQL client written in Java
+(By Julien Viet, core developer of VertX and Java Crash shell)
+[[}]]
+
+# Patroni [[{architecture.HA]]
+  https://github.com/zalando/patroni
+  Patroni: A Template for PostgreSQL HA with ZooKeeper, etcd or Consul
+
+  You can find a version of this documentation that is searchable and also easier
+  to navigate at patroni.readthedocs.io.
+
+  There are many ways to run high availability with PostgreSQL; for a list, see
+  the PostgreSQL Documentation.
+
+  Patroni is a template for you to create your own customized, high-availability
+  solution using Python and - for maximum accessibility - a distributed
+  configuration store like ZooKeeper, etcd, Consul or Kubernetes. Database
+  engineers, DBAs, DevOps engineers, and SREs who are looking to quickly deploy
+  HA PostgreSQL in the datacenter-or anywhere else-will hopefully find it useful.
+
+  We call Patroni a "template" because it is far from being a one-size-fits-all
+  or plug-and-play replication system. It will have its own caveats. Use wisely.
+
+  Note to Kubernetes users: Patroni can run natively on top of Kubernetes. Take a
+  look at the Kubernetes chapter of the Patroni documentation.
+[[}]]
+
+[[{01_PM.TODO]]
+# Percona "TODO"s
+https://www.percona.com/blog/2018/09/28/high-availability-for-enterprise-grade-postgresql-environments/
+______________________________
+https://www.percona.com/blog/2018/10/02/scaling-postgresql-using-connection-poolers-and-load-balancers-for-an-enterprise-grade-environment/
+___________________________
+https://www.percona.com/blog/2018/10/08/detailed-logging-for-enterprise-grade-postresql/
+___________________________
+
+https://www.percona.com/doc/percona-xtrabackup/2.4/release-notes/2.4/2.4.17.html
+___________________________
+https://www.percona.com/blog/2019/07/22/percona-monitoring-and-management-pmm-2-beta-4-is-now-available/
+___________________________
+Configure HAProxy with PostgreSQL Using Built-in pgsql-check
+https://www.percona.com/blog/2019/11/08/configure-haproxy-with-postgresql-using-built-in-pgsql-check/
+___________________________
+(What's new, breaking changes)
+https://www.percona.com/blog/2020/07/28/migrating-to-postgresql-version-13-incompatibilities-you-should-be-aware-of/
+[[}]]
+
+
+
+## mysql_fdw , postgres_fdw : allow PostgreSQL databases to talk to remote
+  homogeneous/heterogeneous databases like PostgreSQL and MySQL, MongoDB, etc.
+
+## pg_stat_statements: allows for tracking execution statistics of all
+  SQL statements executed by a server. gathered statistics are made
+  available via a view "pg_stat_statements".
+
+## pg_repack: Address table fragmentation problems [[{architecture.scalability,performance.troubleshooting}]]
+
+## pgaudit: caters with major compliance requirement for many security standards.
+       providing detailed session and/or object audit logging via the standard PostgreSQL
+       logging facility.
+
+## PostGIS: "arguably the most versatile implementation of the specifications
+           of the Open Geospatial Consortium."
+
+## HypoPG: extension for adding support for hypothetical indexes
+  that is, without actually adding the index. This helps us to answer questions
+  such as “how will the execution plan change if there is an index on column X?”.
+
+## tds_fdw: Another important FDW (foreign data wrapper) extension
+  Both Microsoft SQL Server and Sybase uses TDS (Tabular Data Stream) format.
+
+## orafce: there are lot of migrations underway from Oracle to PostgreSQL.
+  Incompatible functions in PostgreSQL are often painful
+   The “orafce” project implements some of the functions from the Oracle database.
+  The functionality was verified on Oracle 10g and the module is useful for
+   production work.
+
+## pg_bulkload: Is loading a large volume of data into database in a very efficient
+  and faster way a challenge for you?
+
+## wal2json: PostgreSQL has feature related to logical replication built-in.
+  Extra information is recorded in WALs which will facilitate logical decoding.
+  wal2json is a popular output plugin for logical decoding.
+  This can be utilized for different purposes including change data capture.
+
+[[{02_doc_has.comparative,architecture.cache,01_PM.TODO]]
+# PSQL "vs" Redis/ElasticSearch/...
+@[https://www.infoq.com/articles/postgres-handles-more-than-you-think/]
+sponsored article (https://www.heroku.com/postgres)
+
+## caches*:
+* PSQL beautifully designed caching system with pages, usage counts,
+  and transaction logs avoids disk access for repeated reads.
+
+* **shared_buffer configuration parameter** in Postgres configuration file 
+  determines how much memory it will use for caching data.
+  Typically ~ 25% to 40% of  total memory.
+  (PSQL also uses the OS cache). Change it like:
+  ```
+  ALTER SYSTEM SET shared_buffer TO = $value 
+  ```
+* Advanced caching tools include:
+  * pg_buffercache view: see what's occupying the shared buffer cache.
+  * pg_prewarm function (base install), enables DBAs to load table data into
+    either the OS cache or the PSQL buffer cache. (manual or automated).
+    If you know the nature of your queries, it will greatly improve performance.
+  * REF: In-depth guide of PSQL Cache:
+    <https://madusudanan.com/blog/understanding-postgres-caching-in-depth/>
+
+* Text searching*
+-*tsvector data-type* plus a set of functions (to_tsvector, to_tsquery, to search, ..)
+ *tsvector represents a document optimized for text search by sorting terms and *
+ *normalizing variants.* Ex:
+
+    SELECT to_tsquery('english', 'The & Boys & Girls');
+
+      to_tsquery
+    ───────────────
+     'boy' & 'girl'
+
+  - results can be sorted by relevance depending on how often and which fields your query
+    appeared in the results. For example, making title more relevant than body,...
+    (Check official PSQL doc)
+
+ *Data preprocessing with functions*
+  - Try pre-process as much data as possible with server-side functions.
+    cutting down latency from passing too much data back and forth between apps and ddbbs.
+    - particularly useful for large aggregations and joins.
+
+      CREATE FUNCTION                      ← Ex. PL/Python checking string lengths:
+        longer_string_length
+         (string1 string, string2 string)
+        RETURNS integer
+      AS $$
+        a=len(string1)
+        b-len(string2)
+        if a > b:
+          return a
+        return b
+      $$ LANGUAGE plpythonu;
+
+
+ *Key-Value Data Type*
+  -*hstore extension* allows store/search simple key-value pairs.
+    tutorial:
+   @[https://www.ibm.com/cloud/blog/an-introduction-to-postgresqls-hstore]
+
+ *Semi-structured Data Types*
+  -*JSON data-type*: support native JSON binary (JSONB).
+    JSONB significantly improves query performance.
+    As you can see below, it can :
+
+    SELECT '{"product1": ["blue""], "tags": {"price": 10}}'::json; ← convert JSON strings
+                                                                          to native JSON objects
+                          json
+    ──────────────────────────────────────────────
+     {"product1": ["blue"], "tags": {"price": 10}}
+
+ *Tips for Scaling*
+  - Slow queries: See for missing important indexes.
+  - Don't over-index
+  - Use tools like EXPLAIN ANALYZE might surprise you by how often
+    the query planer actually chooses sequential table scans.
+    Since much of your table's row data is already cached, oftentimes
+    these elaborate indexes aren't even used.
+  - *Partial indexes save space*:
+    CREATE INDEX user_signup_date
+      ON users(signup_date)
+        WHERE is_signed_up;      ← We need to order, but only for users signed up
+
+
+  - Choose correct index type:
+
+    -*B-tree index*: used to*sort*data efficiently. (default one for INDEX).
+      - As you scale, inconsistencies can be a larger problem:
+        use 'amcheck' extension periodically.
+
+    -*BRIN indexes*: Block Range INdex (BRIN) can be used when*table is naturally*
+      *already sorted by a column where sort is needed*. Ex, log table written
+       sequentially:
+       - setting BRIN index on timestamp column lets the server know that the data
+         is already sorted.
+
+    -*Bloom filter index*: perfect for multi-column queries on big tables where*you*
+     *only need to test for 'sparse' equality against some query value*. Ex:
+
+      CREATE INDEX i ON t USING bloom(col1, col2, col3);
+      SELECT * from t WHERE col1 = 5 AND col2 = 9 AND col3 = ‘x’;
+
+    -*GIN and GiST indexes*: efficient indexes based on*composite values like text,*
+     *arrays, and JSON*.
+
+ *Legitimate needs for another Data Store*
+  - Special data types not supported by PSQL:
+    linked list, bitmaps, and HyperLogLog functions in Redis.
+    Ex:  Frequency capping means displaying each web visitant (millions of them daily)
+         a given ad just once per day.
+         Redis HyperLogLog data type is perfect. It approximates set membership with
+         a very small error rate, in exchange for O(1) time and a very small memory
+         footprint.
+         PFADD adds an element to a HyperLogLog set. It returns 1 if your element is
+         not in the set already, and 0 if it is in the set.
+
+         PFADD user_ids uid1
+         (integer) 1
+         PFADD user_ids uid2
+         (integer) 1
+         PFADD user_ids uid1
+         (integer) 0
+
+  - Heavy real-time processing:
+    - many pub-sub events, jobs, and dozens of workers to coordinate.
+      Apache Kafka is preferred.
+
+  - Instant full-text searching:
+    real-time application under heavy load with*more than ten searches going on at a time*,
+    needed features like autocomplete, ... Elasticsearch can be a better option.
+[[}]]
+
+# PostGIS (GEOSPATIAL DATA) Summary [[{data.analytics,architecture.graphs]]
+
+  C&P from https://en.wikipedia.org/wiki/PostGIS
+  PostGIS follows the Simple Features for SQL specification from the Open Geospatial Consortium (OGC).
+  https://medium.com/@tjukanov/why-should-you-care-about-postgis-a-gentle-introduction-to-spatial-databases-9eccd26bc42b [{{01_PM.TODO}]]
+
+  PRESETUP) Install PostGIS into current database
+
+  $ sudo add-apt-repository ppa:ubuntugis/ppa  # STEP 1) Install PostGIS extension in current OS/Database
+  $ sudo apt-get update
+  $ sudo apt-get install postgis
+
+  $ PGPASSWORD=... ; psql -u postgres          # STEP 2) Log in to Postgres instance
+
+  CREATE EXTENSION postgis;                    # STEP 3) install the extension
+  CREATE EXTENSION postgis_topology;
+
+## PostGIS @[http://postgis.net/], pg_sphere @[https://pgsphere.github.io/]
+  and q3c @[https://github.com/segasai/q3c]extension allowed ESDC to use
+  normal SQL to run location based queries and more specialized analyses.
+
+## QGIS (until 2013 known as Quantum GIS[2]): OOSS cross-platform desktop geographic information system (GIS)
+  application that supports viewing, editing, and analysis of geospatial data.[3]
+  QGIS supports shapefiles, coverages, personal geodatabases, dxf, MapInfo, *PostGIS*, and other formats.
+  Web services, including Web Map Service and Web Feature Service, are also supported to allow use of
+  data from external sources
+
+## Optimal Route calcs:
+  https://www.unigis.es/estructuras-de-grafo-para-el-enrutamiento-en-postgis/
+  *Tools to create graphs in PostGIS:*
+  └ osm2pgrouting: (Preinstaled with PostGIS). Creates graphs from OSM cartography.
+    Only OpenStreetMap supported (2018).
+  └ pgr_nodeNetwork: (Beta) creates a graphs from table's data.
+  └ Combining PostGIS functions:
+    - St_Union() : Allows for "dissolve" operation, joining N geometries in one MULTI
+                  (MULTILINESTRING,...)
+    - St_Dump () : Allows to fetch all geometries in a MULTI one. in a data-composed type
+                   formed by 'path' attribute (alphanumeric), and  'geom' attribute (geometry).
+
+   Ex.:
+   CREATE TABLE  street_guide ( id SERIAL PRIMARY KEY, name VARCHAR(25), geom GEOMETRY );
+
+   INSERT INTO street_guide (name, geom)
+     VALUES (‘A’, St_GeomFromText( ‘LINESTRING(
+                  -3.6967738 40.4227273, -3.6966589 40.4231664,
+                  -3.6965874 40.4234147, -3.6965117 40.4236891,
+                  -3.6965125 40.4237212)’
+             ) );
+
+   INSERT INTO street_guide (name, geom)
+     VALUES (‘B’, St_GeomFromText( ‘LINESTRING(
+                  -3.6955342 40.4236784, -3.6955697 40.4231059,
+                  -3.6956075 40.4225342)’
+             ));
+   ...
+
+   CREATE TABLE *street_guide_graph* AS
+     SELECT (ST_DUMP(St_Union(geom))).geom   ← Use ST_DUMP(ST_UNION(...)) to create graph *1)*
+     FROM street_guide
+
+   *1)* to group ALL geometries we must ignore any other attributes in ST_UNION (aggregate function)
+        or grouping will fail.
+        To recover other attributes in each arc and espacial relationship of type ST_CONTAINS() among
+        streets and arcs must be established.
+
+   ALTER TABLE street_guide_graph ADD COLUMN source INTEGER;
+   ALTER TABLE street_guide_graph ADD COLUMN target INTEGER;
+
+
+    SELECT pgr_createTopology
+           (‘street_guide_graph’, 0.00001, ‘geom’,’id’); ← - Create street_guide_graph_vertices_pgr  table
+                                                            - updates 'source', 'target' in street_guide_graph.
+[[}]]
+
+
+# PostgreSQL pgcrypto [[{security.crypto,01_PM.low_code]]
+@[https://www.postgresql.org/docs/8.3/pgcrypto.html]
+- Cryptographic functions for PostgreSQL. [[}]]
+
+# Upgrading the server [[{devops.101]]
+- @[https://www.postgresql.org/docs/10/static/upgrading.html"]
+  (pg_dumpall, pg_upgrade, replication)
+[[}]]
+
+# Error Reporting+Logging [[{]]
+@[https://www.postgresql.org/docs/current/static/runtime-config-logging.html]
+[[}]]
+
+# alibaba/PolarDB [[{scalability]]
+  https://github.com/alibaba/PolarDB-for-PostgreSQL
+  PolarDB PostgreSQL (hereafter simplified as PolarDB) is a cloud
+  native database service independently developed by Alibaba Cloud.
+  This service is 100% compatible with PostgreSQL and uses a shared
+  storage-based architecture in which computing is decoupled from
+  storage. This service features flexible scalability,
+  millisecond-level latency and hybrid transactional/analytical
+  processing (HTAP) capabilities.
+[[}]]
+
+# E-Maj 4.0.0 est sorti !  [[{]]
+  https://blog.dalibo.com/2021/06/25/e_maj.html
+- extension PL/pgSQL + client-web qui permet d’enregistrer les mises à jour
+  sur des ensembles de tables prédéfinies.
+- Cette version 4.0.0 apporte un gain de performance pour les opérations de
+  rollback E-Maj, en particulier sur des tables possédant FOREIGN KEYs.
+- Compatible avec PostgreSQL 14.
+
+[[}]]
+
+# pg Utils [[{performance.troubleshooting]]
+@[https://github.com/dataegret/pg-utils]
+Useful DBA tools by Data Egret
+- 83compat.sql
+- check_are_all_subscribed.sql
+- check_missing_grants.sql
+- check_strange_fk.sql
+- check_uniq_indexes.sql
+
+List all tables which do not have UNIQUE CONSTRAINTs.
+- check_config.sql: Report state of config.parameters in user/client sessions
+    (*) -> default value.
+    (c) -> changed
+    !!! -> changed in file, but not yet applied.
+
+- create_db_activity_view9.2.sql     : VIEW for non-idle queries running more then 100ms (optionally 500ms).
+- create_query_stat_cpu_time_view.sql: VIEW for queries running         >= 0.02 seconds (IO-time not accounted for).
+- create_query_stat_io_time_view.sql : VIEW for queries "IO-timing"     >= 0.02 seconds.
+- create_query_stat_time_view.sql    : VIEW for queries "run+IO-timing" >= 0.02 seconds (IO-time not accounted for).
+- create_query_stat_log.sql
+- create_slonik_set_full.sql
+- create slonik_set_incremental.sql
+- create_xlog_math_procedures.sql
+       - xlog_location_numeric : shows current WAL position in decimal expression.
+       - replay_lag_mb         : shows estimated lag between master and standby server in megabytes.
+       - all_replayed          : returns true if all WAL are replayed (zero lag).
+- db_activity.sql and db_activity9.2.sql
+- dirty_to_read_stat.sql             : statistics for "dirty" buffers. (Require pg_buffercache extensions)
+- generate_drop_items.sql
+- index_candidates_from_ssd.sql      : Display indexes which should be moved from/to SSD.       [[{scalability.indexing,performance.troubleshooting,storage.SSD]]
+  index_candidates_to_ssd.sql          Low d_w_rat value shows low disk reads with relatively
+                                       high amount of changes inside relation (this behaviour
+                                       influnces to the index permanent rebuilding, more changes
+                                       in table, more changes in index).
+- table_candidates_from_ssd.sql      : Show tables which should be moved from SSD (high writes,
+  table_candidates_to_ssd.sql          low reads) or to SSD (low writes, high reads).          [[}]]
+
+
+- index_disk_activity.sql            : Display indexes disk reads statistics.
+- indexes_with_null.sql              : Show indexes with NULL data                              [[{qa.billion_dolar_mistake}]]
+- low_used_indexes.sql               : Show indexes which low or not use.
+- master_wal_position.sql            : Shows current WAL state for master.
+- slave_wal_position.sql             : Shows current WAL state for slave.
+- query_stat_counts.sql              : Display query useful statistics: queries, number of calls, runtime, averages.
+- seq_scan_tables.sql                : Show tables with high amount of sequential scans.
+                                       Only following tables are shown:
+                                       with seq_scan > 0 AND
+                                       seq_tup_read > 100000
+- set_default_grants.sql             : Setup DEFAUlT PRIVILEGES for all new object created by postgres   [[{security.AAA]]
+                                       for role_ro and role_rw roles.
+     - role_ro: select on sequences; select on tables.
+     - role_rw: select,usage on sequences; select,insert,update,delete on tables.
+- set_missing_grants.sql             : Setup appropriate GRANTs for role_ro (SELECT) and role_rw
+                                       (SELECT,INSERT,UPDATE,DELETE,USAGE) on tables/views/sequences
+                                       in case when acl of these objects are null or not appropriate
+                                       by this snippet.                                                  [[}]]
+- slony_tables.sql                   : Show tables list from _slony.sl_table
+- sync_tablespaces.sql               : Find indexes stored in different tablespace than their tables
+                                       and move on indexes (ALTER INDEX indexname SET TABLESPACE tablespace)
+                                       into tablespace where the parent table is stored.
+- table_disk_activity.sql            :
+- table_index_write_activity.sql
+  table_write_activity.sql
+[[}]]
+
+# pgbench (Benchmarks)
+https://www.postgresql.org/docs/10/static/pgbench.html
+pgbench : Postgresql benchmark (Useful for tunning also)
+https://blog.pgaddict.com/posts/postgresql-performance-on-ext4-and-xfs
+
+# Events Notify/Listen                                              [[{architecture.streams]]
+  https://www.postgresql.org/docs/9.1/sql-notify.html
+  https://www.postgresql.org/docs/9.1/sql-listen.html
+  http://camel.apache.org/pgevent.html
+
+# Elixir Server (Better) alternative to standard PostgreSQL's notify:
+@[https://github.com/supabase/realtime]
+
+- Elixir server (Phoenix) allows to listen for ddbb changes  via websockets.
+- It works like this:
+  → listens ddbb replication functionality (using Postgres' logical decoding)
+    → convert byte-stream into JSON
+      → broadcasts over websockets.
+
+- Advantages over PostgreSQL's NOTIFY?
+  - No need to set up triggers on every table
+  - NOTIFY payload limit. 8000 bytes failing above it.
+    patchy fix: send an ID, then fetch record, consuming extra resources.
+  - Phoenix consumes one connection to the ddbb, even for many clients.
+- benefits
+  - listening to replication allows to make changes in the DDBB  from anywhere
+    (custom API, directly in DB, via console etc,...) - and changes will
+    still be available via websockets.
+  - Decoupling. Ex: send a new slack message every time someone makes
+    a new purchase.
+  - built with Phoenix, an extremely scalable Elixir framework.
+
+# Debezium ("Kafka integration")
+@[https://www.infoq.com/news/2019/04/change-data-capture-debezium]
+- Creating Events from Databases Using Change Data Capture:
+  Gunnar Morling at MicroXchg Berlin
+
+- Objective:
+  data → database → sync with : cache
+                                search engine.
+
+- Debezium solution:
+  - use change data capture (CDC) tool that captures and
+    publishes changes in a database.
+- Based on Apache Kafka to publish changes as event streams.
+  reads the TX logs (append-only) in a database and creates streams of events.
+  - Different ddbbs have their own APIs for reading the log files.
+    Debezium comes with connectors for several of them, producing
+    one generic and abstract event representation for Kafka.
+[[architecture.streams}]]
+
+# scheduled backups in k8s [[{devops.k8s,security.disaster_recovery]]
+  https://info.crunchydata.com/blog/schedule-postgresql-backups-and-retention-with-kubernetes
+  """ When I've given various talks on PostgreSQL and ask the question "do you take
+     regular backups of your production systems," I don't see as many hands raised
+     (and I'll also use this as an opportunity to say that having a replica is not
+      a backup).
+  However, if you are running PostgreSQL on Kubernetes *using the PostgreSQL Operator*,  [[01_PM.low_code]]
+  with a few commands, the answer to this question is "Yes!"
+[[}]]
+
+## Serializable Snapshot Isolation [[{01_PM.TODO.101]]
+@[https://drkp.net/papers/ssi-vldb12.pdf]
+PostgreSQL [8] is the first open source database to implement the
+abort during commit SSI variant [36] [[}]]
+
+## pgAdmin
+https://www.pgadmin.org/screenshots/#4
+
+## Hot Stand-By [[{security.disaster_recovery}]]
+https://linuxconfig.org/how-to-create-a-hot-standby-with-postgresql
+
+## sepgsql [[{security.selinux}]]
+@[https://www.postgresql.org/docs/current/static/sepgsql.html]
+- This module integrates with SELinux to provide an additional layer of
+  security checking above and beyond what is normally provided by
+  PostgreSQL. From the perspective of SELinux, this module allows
+  PostgreSQL to function as a user-space object manager. Each table or
+  function access initiated by a DML query will be checked against the
+  system security policy. This check is in addition to the usual SQL
+  permissions checking performed by PostgreSQL.
+
+ *Limitations:*
+  PostgreSQL supports row-level access, but sepgsql does not.
+
+## PL pgSQL
+@[https://www.postgresql.org/docs/10/static/plpgsql.html]
+- pldebugger: ¡¡must-have!! extension for developers who work on stored functions
+  written in PL/pgSQL. This extension is well integrated with GUI tools like pgadmin,
+  which allows developers to step through their code and debug it.
+
+- plprofiler: profiler for pl. Specially useful during complex migrations from
+              proprietary databases,
+
+## pgx @[https://github.com/zombodb/pgx]
+- framework for developing PostgreSQL extensions in Rust and
+  strives to be as idiomatic and safe as possible.
+
+## Blockchain on Postgresql [[{architecture.blockchain}]]
+@[https://arxiv.org/pdf/1903.01919.pdf]
+"Hacking" and Morphing Postgresql into a blockchain
+
+## Yugabyte Real Time OLTP              [[{architecture.real_time.OLTP]]
+  https://github.com/YugaByte/yugabyte-dbo
+  https://blog.yugabyte.com/introducing-ysql-a-postgresql-compatible-distributed-sql-api-for-yugabyte-db/
+  high-performance, cloud-native distributed SQL database aiming to
+  support all PostgreSQL features.
+  It is best to fit for cloud-native OLTP (i.e. real-time, business-critical)
+  applications that need absolute data correctness and require at least
+  one of the following: scalability, high tolerance to failures,
+  globally-distributed deployments. [[}]]
+
+##  http://dalibo.github.io/pgbadger/
+  - @[https://www.dalibo.org/_media/pgconf.eu.2013.conferences-pgbadger_v.4.pdf]
+  - log analyzer with detailed reports from PSQL log files
+    (syslog, stderr or csvlog) with in-browser zoomable graph
+  - designed to parse huge log files as well as gzip compressed file
+
+## Explaining PG lantency/ies:
+https://www.cri.ensmp.fr/~coelho/cours/si/pg-latency-20170323-handout.pdf
+
+## https://linuxconfig.org/postgresql-performance-tuning-for-faster-query-execution
+
+## Global Index Advisor
+@[https://rjuju.github.io/postgresql/2020/01/06/pg_qualstats-2-global-index-advisor.html]
+pg qualstats 2: Global index advisor
+
+- Coming up with good index suggestion can be a complex task.
+  It requires knowledge of both apps queries and ddbb specificities.
+-  pg_qualstats extension can provide pretty good index suggestion.
+  Pre-setup: - install and configure PoWA.
+- pg_qualstats version 2  removes the presetup.
+
+# PostgreSQL as Message Queue:  [[{architecute.message,architecture.decoupled]]
+  REF: https://stackoverflow.com/questions/13005410/why-do-we-need-message-brokers-like-rabbitmq-over-a-database-like-postgresql/13005551#13005551
+
+  PostgreSQL 9.5 incorporates SELECT ... FOR UPDATE ... SKIP LOCKED.
+  This makes implementing working queuing systems a lot simpler and
+  easier. You may no longer require an external queueing system since
+  it's now simple to fetch 'n' rows that no other session has locked,
+  and keep them locked until you commit confirmation that the work is
+  done. It even works with two-phase transactions for when external
+  co-ordination is required.
+
+  External queueing systems remain useful, providing canned
+  functionality, proven performance, integration with other systems,
+  options for horizontal scaling and federation, etc. Nonetheless, for
+  simple cases you don't really need them anymore.
+
+  Older versions
+  reliable concurrent queuing is really hard to do right in a RDBM
+  That's why tools like PGQ exist.
+ -  You can get rid of polling in PostgreSQL by using LISTEN and NOTIFY,
+  but that won't solve the problem of reliably handing out entries off
+  the top of the queue to exactly one consumer while preserving highly
+  concurrent operation and not blocking inserts.
+
+  If you don't need highly concurrent multi-worker queue fetches then
+  using a single queue table in PostgreSQL is entirely reasonable.
+
+  https://wiki.postgresql.org/wiki/PGQ_Tutorial
+  What problems is PGQ a solution for?
+  - PGQ will solve asynchronous batch processing of live transactions.
+  - That means you're doing some INSERT/DELETE/UPDATE of rows from
+    your live environment, and you want to trigger some actions but
+    not at COMMIT time, later on. Not in a too distant future either,
+    just asynchronously: without blocking the live transaction.
+  - Every application of a certain size will need to postpone some
+    processing at a later date, and PGQ is a generic high-performance
+    solution built for PostgreSQL that allows implementing just that:
+    the batch processing. PGQ will care about the asynchronous
+    consuming of events, the error management, the queuing behaviour,
+    etc, and it comes with a plain SQL API to do this.    [[}]]
+
+[[}]]
+
+# See notes on coroot on @[../DevOps/coroot.txt]
+
+# A tour of Postgres Index Types [[{]]
+  https://www.citusdata.com/blog/2017/10/17/tour-of-postgres-index-types/ 
+  GitHub users starred the Citus repo A tour of Postgres Index Types
+  Written by Craig Kerstiens
+ 
+Today we’re going to condense some of the information we’ve shared 
+directly with customers about Postgres indexes. Postgres has a number 
+of index types, and with each new release seems to come with another 
+new index type. Each of these indexes can be useful, but which one to 
+use depends on 1. the data type and then sometimes 2. the underlying 
+data within the table, and 3. the types of lookups performed. In what 
+follows we’ll look at a quick survey of the index types available to 
+you in Postgres and when you should leverage each. Before we dig in, 
+here’s a quick glimpse of the indexes we’ll walk you through: 
+B-TreeGeneralized Inverted Index (GIN)Generalized Inverted Seach Tree 
+(GiST)Space partitioned GiST (SP-GiST)Block Range Indexes (BRIN)Hash 
+Now onto the indexing In Postgres, a B-Tree index is what you most 
+commonly want If you have a degree in Computer Science, then a B-tree 
+index was likely the first one you learned about. A B-tree index 
+creates a tree that will keep itself balanced and even. When it goes 
+to look something up based on that index it will traverse down the 
+tree to find the key the tree is split on and then return you the 
+data you’re looking for. Using an index is much faster than a 
+sequential scan because it may only have to read a few pages as 
+opposed to sequentially scanning thousands of them (when you’re 
+returning only a few records). If you run a standard CREATE INDEX it 
+creates a B-tree for you. B-tree indexes are valuable on the most 
+common data types such as text, numbers, and timestamps. If you’re 
+just getting started indexing your database and aren’t leveraging too 
+many advanced Postgres features within your database, using standard 
+B-Tree indexes is likely the path you want to take. GIN indexes, for 
+columns with multiple values Generalized Inverted Indexes, commonly 
+referred to as GIN, are most useful when you have data types that 
+contain multiple values in a single column. From the Postgres docs: 
+“GIN is designed for handling cases where the items to be indexed are 
+composite values, and the queries to be handled by the index need to 
+search for element values that appear within the composite items. For 
+example, the items could be documents, and the queries could be 
+searches for documents containing specific words.” The most common 
+data types that fall into this bucket are: hStoreArraysRange 
+typesJSONB One of the beautiful things about GIN indexes is that they 
+are aware of the data within composite values. But because a GIN 
+index has specific knowledge about the data structure support for 
+each individual type needs to be added, as a result not all datatypes 
+are supported. GiST indexes, for rows that overlap values GiST 
+indexes are most useful when you have data that can in some way 
+overlap with the value of that same column but from another row. The 
+best thing about GiST indexes: if you have say a geometry data type 
+and you want to see if two polygons contained some point. In one case 
+a specific point may be contained within box, while another point 
+only exists within one polygon. The most common datatypes where you 
+want to leverage GiST indexes are: Geometry typesText when dealing 
+with full-text search GiST indexes have some more fixed constraints 
+around size, whereas GIN indexes can become quite large. As a result, 
+GiST indexes are lossy. From the docs: “A GiST index is lossy, 
+meaning that the index might produce false matches, and it is 
+necessary to check the actual table row to eliminate such false 
+matches. (PostgreSQL does this automatically when needed.)” This 
+doesn’t mean you’ll get wrong results, it just means Postgres has to 
+do a little extra work to filter those false positives before giving 
+your data back to you. Special note: GIN and GiST indexes can often 
+be beneficial on the same column types. One can often boast better 
+performance but larger disk footprint in the case of GIN and vice 
+versa for GiST. When it comes to GIN vs. GiST there isn’t a perfect 
+one size fits all, but the broad rules above apply SP-GiST indexes, 
+for larger data Space partitioned GiST indexes leverage space 
+partitioning trees that came out of some research from Purdue. 
+SP-GiST indexes are most useful when your data has a natural 
+clustering element to it, and is also not an equally balanced tree. A 
+great example of this is phone numbers (at least US ones). They 
+follow a format of: 3 digits for area code3 digits for prefix 
+(historically related to a phone carrier’s switch) 4 digits for line 
+number This means that you have some natural clustering around the 
+first set of 3 digits, around the second set of 3 digits, then 
+numbers may fan out in a more even distribution. But, with phone 
+numbers some area codes have a much higher saturation than others. 
+The result may be that the tree is very unbalanced. Because of that 
+natural clustering up front and the unequal distribution of data–data 
+like phone numbers could make a good case for SP-GiST. BRIN indexes, 
+for larger data Block range indexes can focus on some similar use 
+cases to SP-GiST in that they’re best when there is some natural 
+ordering to the data, and the data tends to be very large. Have a 
+billion record table especially if it’s time series data? BRIN may be 
+able to help. If you’re querying against a large set of data that is 
+naturally grouped together such as data for several zip codes (which 
+then roll up to some city) BRIN helps to ensure that similar zip 
+codes are located near each other on disk. When you have very large 
+datasets that are ordered such as dates or zip codes BRIN indexes 
+allow you to skip or exclude a lot of the unnecessary data very 
+quickly. BRIN additionally are maintained as smaller indexes relative 
+to the overall datasize making them a big win for when you have a 
+large dataset. Hash indexes, finally crash safe Hash indexes have 
+been around for years within Postgres, but until Postgres 10 came 
+with a giant warning that they were not WAL-logged. This meant if 
+your server crashed and you failed over to a stand-by or recovered 
+from archives using something like wal-g then you’d lose that index 
+until you recreated it. With Postgres 10 they’re now WAL-logged so 
+you can start to consider using them again, but the real question is 
+should you? Hash indexes at times can provide faster lookups than 
+B-Tree indexes, and can boast faster creation times as well. The big 
+issue with them is they’re limited to only equality operators so you 
+need to be looking for exact matches. This makes hash indexes far 
+less flexible than the more commonly used B-Tree indexes and 
+something you won’t want to consider as a drop-in replacement but 
+rather a special case. Which do you use? We just covered a lot and if 
+you’re a bit overwhelmed you’re not alone. If all you knew before was 
+CREATE INDEX you’ve been using B-Tree indexes all along, and the good 
+news is you’re still performing as well or better than most databases 
+that aren’t Postgres :) As you start to use more Postgres features 
+consider this a cheatsheet for when to use other Postgres types: 
+B-Tree - For most datatypes and queriesGIN - For 
+JSONB/hstore/arraysGiST - For full text search and geospatial 
+datatypesSP-GiST - For larger datasets with natural but uneven 
+clusteringBRIN - For really large datasets that line up sequentially 
+Hash - For equality operations, and generally B-Tree still what you 
+want here
+[[}]]
+
+# PostgreSQL 15 Released!
+  https://www.postgresql.org/about/news/postgresql-15-released-2526/
+
+# PostgreSQL is a great  publish/subscribe or job server
+  https://webapp.io/blog/postgres-is-the-answer/
+
+# The Wonders of Postgres Logical Decoding Messages: [[{PM.TODO]]
+  https://www.infoq.com/articles/wonders-of-postgres-logical-decoding-messages/
+[[}]]
+
+# Colonnes liées par une relation d'inégalité - nouvelle solution
+  https://blog.dalibo.com/2023/02/02/colonnes_liees_par_une_relation_d_inegalite_nouvelle_solition.html 
+  Il nous faut donc un index fonctionnelde typeGiST, plus adapté aux
+  types complexes (intervalles, données géométriques, etc).
+
+  CREATE INDEX ON frequencies USING GIST (int4range(freqmin,freqmax,'[]') );
+  ANALYZE frequencies ;
+[[}]]
+
+
+
+
+
+[[ PM.TODO }]]

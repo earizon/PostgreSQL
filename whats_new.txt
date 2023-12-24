@@ -1,0 +1,66 @@
+# What's new ------------------------------------------------------------------ [[{01_PM.WHATS_NEW]]
+
+## PostgreSQL 14 (2021-??-??)*
+* SEARCH and CYCLE clauses:
+@[https://www.depesz.com/2021/02/04/waiting-for-postgresql-14-search-and-cycle-clauses/]
+  SQL standard for recursive queries to be able to do produce
+  "breadth" or "depth-first" search orders and detect cycles.
+  These clauses can be rewritten into queries using existing syntax,
+  and that is what this patch does in the rewriter.
+  Discussion:
+  https://www.postgresql.org/message-id/flat/db80ceee-6f97-9b4a-8ee8-3ba0c58e5be2@2ndquadrant.com
+
+## PostgreSQL 12 (2019-10-03)*
+* SQL/JSON (standard) support allowing for:
+  * inequality-comparisons
+  * arithmetic operations
+  * regest searchs over values
+  * mathematical operations (find absolute value, ...)
+* improved authentication and administration options.              [[{security.AAA}]]
+* improved performance (smaller indexes, better optimization)
+* JUST-IN-TIME compilation using the LLVM compiler                 [[{performance,scalability}]]
+
+## PostgreSQL 10*
+
+Specifically focused on effectively distribute data across many nodes.  [[{scalability]]
+@[http://m.linuxjournal.com/content/postgresql-10-great-new-version-great-database]
+* Logical Replication: Instead of used adhoc WALs replications, a
+  network protocol is used to broadcast changes. The old method just
+  allowed for replication among same ddbb version, while the new
+  one is version independent.
+  Basically:
+  ```
+  | (host 1) CREATE PUBLICATION publication01 FOR TABLE table1, table2;
+  |
+  | (host 2) CREATE SUBSCRIPTION mysub CONNECTION 'host=mydb user=myuser'
+  |          PUBLICATION publication01;
+  ```
+
+* Declarative Partitioning for tables [scalability]
+  ```
+  | postgres=# CREATE TABLE Invoices (
+  |   id SERIAL,
+  |   issued_at TIMESTAMP NOT NULL,
+  |   customer_name TEXT NOT NULL,
+  |   amount INTEGER NOT NULL,
+  |   product_bought TEXT NOT NULL
+  | ) *partition by range (issued_at);*
+  | CREATE TABLE
+  |
+  |   postgres=# CREATE TABLE issued_at_y2018m01 PARTITION OF Invoices
+  |              FOR VALUES FROM ('2018-jan-01') to ('2018-jan-31');
+  |
+  |   postgres=# CREATE TABLE issued_at_y2018m02 PARTITION OF Invoices
+  |               FOR VALUES FROM ('2018-feb-01') to ('2018-feb-28');
+  |
+  |   postgres=# create index on issued_at_y2018m01(issued_at); ← Optional
+  |   postgres=# create index on issued_at_y2018m02(issued_at);  (recommended)
+  ```
+
+* See also pg_partman:
+  "creating new partitions and maintaining existing ones, including purging
+   unwanted partitions, requires a good dose of manual effort, even in 10+"
+   pg_partman extension allows to automate this maintenance.
+* improved Query Parallelism.
+* Quorum Commit for Synchronous Replication,                           [[scalability}]]
+[[}]]

@@ -1,0 +1,19 @@
+## Who is Who
+* @[https://www.postgresql.org/community/contributors/]
+* Peter Zaitsev, Percona Founder.
+
+## Companies:
+* Percona:
+* https://labs.dalibo.com/
+  * DALIBO is the leading PostgreSQL company in France, providing services, training and support since 2005.
+
+  * PEV2: Visualize your Explain plans
+  * temBoard: Monitor, optimize and configure multiple PostgreSQL instances
+  * Anomyzation and Data Masking for PostgreSQL
+  * Dramatiq-pg: PSQL Broker for Dramatiq task queue
+  * E-Maj: Track updates on table sets with rollback capabilities
+  * ldap2pg: Manage PostgreSQL roles and privileges from YAML or LDAP.
+  * pg_activity: "top like" application for PSQL server activity.
+  * Pitrery: PSQL Point-in-Time Recovery made easy
+  * sqlserver2pgsql: MS SQL Server to PostgreSQL converter.
+

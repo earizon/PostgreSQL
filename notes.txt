@@ -1,719 +1,665 @@
-# Apropos:
-- Visit next Web site for a great experience:
-  https://earizon.github.io/txt_world_domination/viewer.html?payload=../PostgreSQL/notes.txt
-
-- If you want to contribute to great gistory of this
-  document you can take the next flight to:
+## Apropos:
+  Content is versioned in git.  commits, issues and pull-requests welcome!
 @[https://www.github.com/earizon/PostgreSQL]
-  Your commits and pull-request will be immortalized
-  in the Pantheon of the Unicode Gods.
-────────────────────────────────────────────────────────────────────────────────
 
-# External Links                          [[{01_PM.resource]]
-  - Manuals: (High quality)               @[https://www.postgresql.org/docs/manuals/]
-
-  - PostgreSQL internals (Hironobu SUZUKI) [TODO]
-  @[http://www.interdb.jp/pg/index.html]
-
-  - DB engines Rank:
-  @[https://db-engines.com/en/ranking]
-
-  - Percona Blog:
-  @[https://www.percona.com/]
-
-- PSQL Hackers list (Patches, dev. discussions, ...)
+[[{01_PM.resource]]
+## External Links  
+* Manuals: (High quality)               @[https://www.postgresql.org/docs/manuals/]
+* PostgreSQL internals (Hironobu SUZUKI) [TODO]
+@[http://www.interdb.jp/pg/index.html]
+* DB engines Rank:
+@[https://db-engines.com/en/ranking]
+* Percona Blog:
+@[https://www.percona.com/]
+* PSQL Hackers list (Patches, dev. discussions, ...)
 @[https://www.postgresql.org/list/pgsql-hackers/]
 
-# Bibliography
-- P. A. Alsberg and J. D. Day. A principle for resilient
+## Bibliography
+* P. A. Alsberg and J. D. Day. A principle for resilient
   sharing of distributed resources. In Proceedings of the 2Nd International Conference on Software Engineering
   ICSE ’76, pages 562–570, Los Alamitos, CA, USA, 1976. IEEE Computer Society Press.
--  E. Cecchet, G. Candea, and A. Ailamaki.
+*  E. Cecchet, G. Candea, and A. Ailamaki.
   Middleware-based database replication: The gaps between theory and practice. In Proceedings of the
   2008 ACM SIGMOD International Conference on Management of Data , SIGMOD ’08, pages 739–752,
   New York, NY, USA, 2008. ACM
-- M. Stonebraker. Concurrency control and consistency of multiple copies of data in distributed ingres.
+* M. Stonebraker. Concurrency control and consistency of multiple copies of data in distributed ingres.
   IEEE Transactions on Software Engineering,
   SE-5(3):188–194, May 1979
-- M. Wiesmann, F. Pedone, A. Schiper, B. Kemme, and G. Alonso. Understanding replication in databases
+* M. Wiesmann, F. Pedone, A. Schiper, B. Kemme, and G. Alonso. Understanding replication in databases
   and distributed systems. In Proceedings 20th IEEE International Conference on Distributed Computing
   Systems, pages 464–474, April 2000.
-- . H. Thomas. A majority consensus approach to concurrency control for multiple copy databases.
+* . H. Thomas. A majority consensus approach to concurrency control for multiple copy databases.
   ACM Trans. Database Syst.  , 4(2):180–209, June 1979. H. Thomas. A majority consensus approach to
   concurrency control for multiple copy databases.  ACM Trans. Database Syst.  , 4(2):180–209, June 1979
-- M. Wiesmann, F. Pedone, A. Schiper, B. Kemme, and G. Alonso. Understanding replication in databases
+* M. Wiesmann, F. Pedone, A. Schiper, B. Kemme, and G. Alonso. Understanding replication in databases
   and distributed systems. In Proceedings 20th IEEE International Conference on Distributed Computing
   Systems , pages 464–474, April 2000.
-
-# Who is Who
-  - @[https://www.postgresql.org/community/contributors/]
-  - Peter Zaitsev, Percona Founder.
-
-# Companies:
-  ● Percona:
-  ● https://labs.dalibo.com/
-    - DALIBO is the leading PostgreSQL company in France, providing services, training and support since 2005.
-
-    - PEV2: Visualize your Explain plans
-    - temBoard: Monitor, optimize and configure multiple PostgreSQL instances
-    - Anomyzation and Data Masking for PostgreSQL
-    - Dramatiq-pg: PSQL Broker for Dramatiq task queue
-    - E-Maj: Track updates on table sets with rollback capabilities
-    - ldap2pg: Manage PostgreSQL roles and privileges from YAML or LDAP.
-    - pg_activity: "top like" application for PSQL server activity.
-    - Pitrery: PSQL Point-in-Time Recovery made easy
-    - sqlserver2pgsql: MS SQL Server to PostgreSQL converter.
-[[}]]
-
-# What's new ------------------------------------------------------------------ [[{01_PM.WHATS_NEW]]
- *PostgreSQL 14 (2021-??-??)*
-  - SEARCH and CYCLE clauses:
-  @[https://www.depesz.com/2021/02/04/waiting-for-postgresql-14-search-and-cycle-clauses/]
-    SQL standard for recursive queries to be able to do produce
-    "breadth" or "depth-first" search orders and detect cycles.
-    These clauses can be rewritten into queries using existing syntax,
-    and that is what this patch does in the rewriter.
-    Discussion:
-    https://www.postgresql.org/message-id/flat/db80ceee-6f97-9b4a-8ee8-3ba0c58e5be2@2ndquadrant.com
-
-
- *PostgreSQL 12 (2019-10-03)*
-  - SQL/JSON (standard) support allowing for:
-    - inequality-comparisons
-    - arithmetic operations
-    - regest searchs over values
-    - mathematical operations (find absolute value, ...)
-  - improved authentication and administration options.              [[{security.AAA}]]
-  - improved performance (smaller indexes, better optimization)
-  - JUST-IN-TIME compilation using the LLVM compiler                 [[{performance,scalability}]]
-
- *PostgreSQL 10*
-  Specifically focused on effectively distribute data across many nodes.  [[{scalability]]
-@[http://m.linuxjournal.com/content/postgresql-10-great-new-version-great-database]
-  - Logical Replication: Instead of used adhoc WALs replications, a
-    network protocol is used to broadcast changes. The old method just
-    allowed for replication among same ddbb version, while the new
-    one is version independent.
-    Basically:
-    (host 1) CREATE PUBLICATION publication01 FOR TABLE table1, table2;
-
-    (host 2) CREATE SUBSCRIPTION mysub CONNECTION 'host=mydb user=myuser'
-             PUBLICATION publication01;
-
-  - Declarative Partitioning for tables [scalability]
-    postgres=# CREATE TABLE Invoices (
-      id SERIAL,
-      issued_at TIMESTAMP NOT NULL,
-      customer_name TEXT NOT NULL,
-      amount INTEGER NOT NULL,
-      product_bought TEXT NOT NULL
-    ) *partition by range (issued_at);*
-    CREATE TABLE
-
-    postgres=# CREATE TABLE issued_at_y2018m01 PARTITION OF Invoices
-               FOR VALUES FROM ('2018-jan-01') to ('2018-jan-31');
-
-    postgres=# CREATE TABLE issued_at_y2018m02 PARTITION OF Invoices
-                FOR VALUES FROM ('2018-feb-01') to ('2018-feb-28');
-
-    postgres=# create index on issued_at_y2018m01(issued_at); ← Optional
-    postgres=# create index on issued_at_y2018m02(issued_at);  (recommended)
-
-    See also pg_partman:
-    "creating new partitions and maintaining existing ones, including purging
-     unwanted partitions, requires a good dose of manual effort, even in 10+"
-     pg_partman extension allows to automate this maintenance.
-
-  - improved Query Parallelism.
-
-  - Quorum Commit for Synchronous Replication,                           [[scalability}]]
 [[}]]
 
 # PostgreSQL 101 [[{devops.101,security.disaster_recovery,security.aaa]]
- *Core ENV.VARS*               *Show DB info*
-  PGPORT                        mydb=> SELECT version();
-  PGUSER  (alt. -U option)      mydb=> SELECT current_date;
-  PGPASSWORD                    mydb=> SELECT current_database();
-  PGHOST ?                      mydb=> SELECT rolname  FROM pg_roles; ← List users
-                                - A ROLE is an entity that can own database objects and have database
-                                  privileges. It can be considered a "user", a "group", or both depending on
-                                  ussage.
-                                - New roles can be created with CREATE ROLE
- *psql commands:*
-  \?
-  \h
-  \l            list databases
-  \c db_name    connect to ddbb
-  \q            quit
-  \dt           show all tables in ddbb
-  \dt *.*.      show all tables globally
-  \d  table     show table schema
-  \d+ table
-  \du           list current user's permissions
-  \u
- *PostgresSQL instance entities "layout"*:                               [[{02_doc_has.diagram]]
 
-                Catalog:(also known as Databases)
-                contains all the schemas, records, (low-level) logs+write-ahead
-                logs and constraints for tables.
-                Catalogs are rigidly separated. A client connection can NOT access two
-                at the same time. Each Catalog has a different set of physical storage,
-                passwords and permissions.
-                                  ┌──┴─────┐
- Server  == DDBB Cluster  1 ←→ N  Catalog    1 ←→ N Schema
- └──────────┬──────────┘          (Database)        └──┬─┘
-            │                                 NAMESPACE FOR TABLES
-            │                                 and security boundary. N schemas can be accessed by
-            │                                 a given client connection, by prefixing objects with
-            │                                 the schema name. eg: myschema01.tableXX
-            │                                 the schema name. eg: myschema02.tableXX
-  ┌─────────┘                                 └─────────┬─────────┘
-  ├G*Databases*                    ┌────────────────────┘
-  │  │                     ┌───────┴───────┐
-  │  ├─ postgres           *SCHEMA COMMANDS*
-  │  │  │
-  │  │  ├─ Casts           \dn  ← list existing schemas
-  │  │  │                  SELECT schema_name FROM information_schema.schemata;
-  │  │  ├─ Catalogs**1*    SELECT nspname     FROM pg_catalog.pg_namespace;
-  │  │  │
-  │  │  ├─ Event Triggers  @[http://www.postgresql.org/docs/current/static/sql-createschema.html]
-  │  │  │                 *CREATE SCHEMA*IF NOT EXISTS accountancy;
-  │  │  ├─ Extensions
-  │  │  │                  CREATE TABLE accountancy.employee (....); ← employees table scoped
-  │  │  ├─ Foreing
-  │  │  │  Data Wrap       @[http://www.postgresql.org/docs/current/static/sql-dropschema.html]
-  │  │  │                 *DROP SCHEMA*IF EXISTS accountancy CASCADE;
-  │  │  ├─ Languages      └───┬────────────...
-  │  │  │                     │
-  │  │  └─ Schemas  ←─────────┘
-  │  │     └─ schema01
-  │  │        └─ table01, table02, ...
-  │  │
-  │  ├─ myDDBB01
-  │  ...
-  │
-  ├─ Login/Group @[https://www.postgresql.org/docs/10/static/user-manag.html]
-  │
-  └─ Tablespaces   ←  Allow storage-admins define mapping "objects ←→ file system"
+* ```
+  | Core ENV.VARS*               *Show DB info*
+  | PGPORT                        mydb=> SELECT version();
+  | PGUSER  (alt. -U option)      mydb=> SELECT current_date;
+  | PGPASSWORD                    mydb=> SELECT current_database();
+  | PGHOST ?                      mydb=> SELECT rolname  FROM pg_roles; ← List users
+  |                               - A ROLE is an entity that can own database objects and have database
+  |                                 privileges. It can be considered a "user", a "group", or both depending on
+  |                                 ussage.
+  |                               - New roles can be created with CREATE ROLE
+  ```
+* psql commands:
+  ```
+  | \?
+  | \h
+  | \l            list databases
+  | \c db_name    connect to ddbb
+  | \q            quit
+  | \dt           show all tables in ddbb
+  | \dt *.*.      show all tables globally
+  | \d  table     show table schema
+  | \d+ table
+  | \du           list current user's permissions
+  | \u
+  ```
+* PostgresSQL instance entities "layout":                               
 
-**1*: regular tables used internally by cluster instances to store
-      schema metadata (tables&columns info, internal bookkeeping, ...)
-      They are special in the sense that they must not be changed by hand, but
-      just let the cluster instance manage them.                            [[}]]
+  ```
+  [[{02_doc_has.diagram}]]
+  |                Catalog:(also known as Databases)
+  |                contains all the schemas, records, (low-level) logs+write-ahead
+  |                logs and constraints for tables.
+  |                Catalogs are rigidly separated. A client connection can NOT access two
+  |                at the same time. Each Catalog has a different set of physical storage,
+  |                passwords and permissions.
+  |                                  ┌──┴─────┐
+  | Server  == DDBB Cluster  1 ←→ N  Catalog    1 ←→ N Schema
+  | └──────────┬──────────┘          (Database)        └──┬─┘
+  |            │                                 NAMESPACE FOR TABLES
+  |            │                                 and security boundary. N schemas can be accessed by
+  |            │                                 a given client connection, by prefixing objects with
+  |            │                                 the schema name. eg: myschema01.tableXX
+  |            │                                 the schema name. eg: myschema02.tableXX
+  |  ┌─────────┘                                 └─────────┬─────────┘
+  |  ├ *Databases*                    ┌────────────────────┘
+  |  │  │                     ┌───────┴───────┐
+  |  │  ├─ postgres           *SCHEMA COMMANDS*
+  |  │  │  │
+  |  │  │  ├─ Casts           \dn  ← list existing schemas
+  |  │  │  │                  SELECT schema_name FROM information_schema.schemata;
+  |  │  │  ├─ Catalogs ¹      SELECT nspname     FROM pg_catalog.pg_namespace;
+  |  │  │  │
+  |  │  │  ├─ Event Triggers  @[http://www.postgresql.org/docs/current/static/sql-createschema.html]
+  |  │  │  │                 *CREATE SCHEMA*IF NOT EXISTS accountancy;
+  |  │  │  ├─ Extensions
+  |  │  │  │                  CREATE TABLE accountancy.employee (....); ← employees table scoped
+  |  │  │  ├─ Foreing
+  |  │  │  │  Data Wrap       @[http://www.postgresql.org/docs/current/static/sql-dropschema.html]
+  |  │  │  │                 *DROP SCHEMA*IF EXISTS accountancy CASCADE;
+  |  │  │  ├─ Languages      └───┬────────────...
+  |  │  │  │                     │
+  |  │  │  └─ Schemas  ←─────────┘
+  |  │  │     └─ schema01
+  |  │  │        └─ table01, table02, ...
+  |  │  │
+  |  │  ├─ myDDBB01
+  |  │  ...
+  |  │
+  |  ├─ Login/Group @[https://www.postgresql.org/docs/10/static/user-manag.html]
+  |  │
+  |  └─ Tablespaces   ←  Allow storage-admins define mapping "objects ←→ file system"
+  |
+  | ¹: Catalog: regular tables used internally by cluster instances to store
+  |    schema metadata (tables&columns info, internal bookkeeping, ...)
+  |    They are special in the sense that they must not be changed by hand, but
+  |    just let the cluster instance manage them.
+  ```
 
- *Bootstrap new Postgresql Server (Cluster)*
+* supported isolation levels [[{01_PM.TODO.101]]
+  ```
+  - READ COMMITTED
+  - REPEATABLE READ (i.e., SI)
+  - SERIALIZABLE (i.e., SI with detection and mitigation of anomalies)
+  ```
+    A snapshot comprises of a set of transaction IDs, which were committed as of
+  the start of this transaction, whose effects are visible. Each row has two
+  additional elements in the header, namely xmin and xmax , which are the IDs
+  of the transactions that created and deleted the row, respectively. Note,
+  every update to a row is a delete followed by an insert (both in the table
+  and index). Deleted rows are flagged by setting xmax instead of being
+  actually deleted. In other words, PostgreSQL maintains all versions of a row
+  unlike other implementations such as Oracle that update rows in-place and
+  keep a rollback log. This is ideal for our goal of building a blockchain that
+  maintains all versions of data. For each row, a snapshot checks xmin and xmax
+  to see which of these transactions’ ID are included in the snapshot to
+  determine row visibility
+[[}]]
 
-  Bootstrap Cluster == Init storage area
-                       (data directory in FS terms)
-  Server 1 → N Databases
 
-   $ sudo su postgres                        ← Switch to postgres OS user
-   $ initdb -D /usr/local/pgsql/data         ← alt.1
-   $ pg_ctl -D /usr/local/pgsql/data initd   ← alt.2
-     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-    'postgres' and 'template1' ddbbs will be created automatically
+## Bootstrap new Postgresql Server (Cluster)
 
-# Starting the Server
-  $ sudo su postgres                       ← Switch to postgres OS user
-  $ postgres -D /usr/local/pgsql/data \    ← Alt.1
-  $ 1>/var/log/postgresql/logfile 2>&1 &
-  $ pg_ctrl start \                        ← Alt.2. Using pg_ctl "easy" wrapper
-  $   -l /var/log/postgresql/logfile'
+* Bootstrap Cluster "==" Init storage area (data directory in FS terms)
+  ```
+  | Server 1 → N Databases
+  |
+  |  $ sudo su postgres                        ← Switch to postgres OS user
+  |  $ initdb -D /usr/local/pgsql/data         ← alt.1
+  |  $ pg_ctl -D /usr/local/pgsql/data initd   ← alt.2
+  |    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  |   'postgres' and 'template1' ddbbs will be created automatically
+  ```
 
-  $ sudo su root                           ← Alt.3. SystemD (recomended in SystemD enabled OSs)
-  $ systemctl enable postgresql.service    ← Enable at OS reboot
-  $ systemctl start postgresql.service     ← Start now without rebooting
-  $ journalctl --unit postgresql.service   ← Check SystemD unit logs
+## Starting the Server
+  ```
+  | $ sudo su postgres                       ← Switch to postgres OS user
+  | $ postgres -D /usr/local/pgsql/data \    ← Alt.1
+  | $ 1>/var/log/postgresql/logfile 2>&1 &
+  | $ pg_ctrl start \                        ← Alt.2. Using pg_ctl "easy" wrapper
+  | $   -l /var/log/postgresql/logfile'
+  | 
+  | $ sudo su root                           ← Alt.3. SystemD (recomended in SystemD enabled OSs)
+  | $ systemctl enable postgresql.service    ← Enable at OS reboot
+  | $ systemctl start postgresql.service     ← Start now without rebooting
+  | $ journalctl --unit postgresql.service   ← Check SystemD unit logs
+  ```
 
-# CRUD Users
-  $ sudo su postgres                       ← Switch to postgres OS user
-  $ psql
-   CREATE USER IF NOT EXISTS myUser01 WITH PASSWORD 'my_user_password';
-   ALTER USER myUser01 WITH PASSWORD 'my_new_password';
-   DROP USER IF EXISTS myUser01 ;
+## CRUD Users
+  ```
+  | $ sudo su postgres                       ← Switch to postgres OS user
+  | $ psql
+  |  CREATE USER IF NOT EXISTS myUser01 WITH PASSWORD 'my_user_password';
+  |  ALTER USER myUser01 WITH PASSWORD 'my_new_password';
+  |  DROP USER IF EXISTS myUser01 ;
+  ```
 
-# Create/Remove new DDBB:
+## Create/Remove new DDBB:
   (PRE-SETUP: Create user account for the new DDBB, ex: department01, ...)
-  $ createdb mydb  ← create new
-  $ psql mydb      ← access it to check everything is OK
-  $ dropdb   mydb  ← Remove. R WARN : can NOT be undone
-                     NOTE:  Many tools assume ddbb names -U flag or PGUSER
-                            Env.Var as username by default
+  ```
+  | $ createdb mydb  ← create new
+  | $ psql mydb      ← access it to check everything is OK
+  | $ dropdb   mydb  ← Remove. R WARN : can NOT be undone
+  |                    NOTE:  Many tools assume ddbb names -U flag or PGUSER
+  |                           Env.Var as username by default
+  ```
 
-# Granting privileges to users
- # GRANT ALL PRIVILEGES ON tableXXX        TO myUser01;
- # GRANT ALL PRIVILEGES ON DATABASE myDB01 TO myUser01; ← (tables, connections, ...)
- # GRANT CONNECT        ON DATABASE myDB01 TO myUser01;
- # GRANT USAGE          ON SCHEMA public   TO myUser01;
- # GRANT EXECUTE        ON ALL FUNCTIONS
-                          IN SCHEMA public TO myUser01;
- # GRANT SELECT,UPDATE  ON ALL TABLES
-         INSERT,DELETE,   IN SCHEMA public TO myUser01;
-         CREATE,??
+## Granting privileges to users
 
-# CREATE TABLE
-  -- DO $$
-  -- BEGIN
-  --   EXECUTE 'ALTER DATABASE ' || current_database() || ' SET TIMEZONE TO UTC';
-  -- END; $$;
-  CREATE TABLE IF NOT EXISTS myTable01 (
-    ID         VARCHAR(40)             NOT NULL           ← or ID serial PRIMARY KEY,
-                                       CONSTRAINT
-                                       MYTABLE01_PK PRIMARY KEY ,
-    NAME       VARCHAR(255)            NOT NULL DEFAULT '#UNKNOWN#',
-    CREATED_AT TIMESTAMP DEFAULT NOW() NOT NULL,
-    PUB_KEY    VARCHAR(88)             NOT NULL UNIQUE,
-    PARENT_ID  VARCHAR(40)           R NULL
-                                       CONSTRAINT
-                                          myTable01_FK REFERENCES myTable01(ID),
-    QUANTITY   INTEGER                 NOT NULL CHECK (QUANTITY >= 1) DEFAULT 1,
-    RATIO      NUMERIC(5,2)            NOT NULL CHECK (RATIO >= 1.5 ) DEFAULT 2,
-    ACTIVE     BOOLEAN                 NOT NULL
-    CREATED_AT TIMESTAMPTZ             DEFAULT now()
-  );
+  ```
+  | # GRANT ALL PRIVILEGES ON tableXXX        TO myUser01;
+  | # GRANT ALL PRIVILEGES ON DATABASE myDB01 TO myUser01; ← (tables, connections, ...)
+  | # GRANT CONNECT        ON DATABASE myDB01 TO myUser01;
+  | # GRANT USAGE          ON SCHEMA public   TO myUser01;
+  | # GRANT EXECUTE        ON ALL FUNCTIONS
+  |                          IN SCHEMA public TO myUser01;
+  | # GRANT SELECT,UPDATE  ON ALL TABLES
+  |         INSERT,DELETE,   IN SCHEMA public TO myUser01;
+  |         CREATE,??
+  ```
 
-  -- CREATE NEW INDEX
-  CREATE IF NOT EXISTS INDEX  MYTABLE01_PUBKEY_IDX ON  myTable01 (PUB_KEY);
+## CREATE TABLE
 
-  -- CREATE COMMENTS
-  COMMENT ON TABLE  myTable01      IS '....';
-  COMMENT ON COLUMN myTable01.ID   IS '....';
-  COMMENT ON COLUMN myTable01.NAME IS '....';
-
-  ALTER TABLE myTable01 ADD PRIMARY KEY (ID); ← Alternative to create PRIMARY KEY
+  ```
+  | -- DO $$
+  | -- BEGIN
+  | --   EXECUTE 'ALTER DATABASE ' || current_database() || ' SET TIMEZONE TO UTC';
+  | -- END; $$;
+  | CREATE TABLE IF NOT EXISTS myTable01 (
+  |   ID         VARCHAR(40)             NOT NULL           ← or ID serial PRIMARY KEY,
+  |                                      CONSTRAINT
+  |                                      MYTABLE01_PK PRIMARY KEY ,
+  |   NAME       VARCHAR(255)            NOT NULL DEFAULT '#UNKNOWN#',
+  |   CREATED_AT TIMESTAMP DEFAULT NOW() NOT NULL,
+  |   PUB_KEY    VARCHAR(88)             NOT NULL UNIQUE,
+  |   PARENT_ID  VARCHAR(40)           R NULL
+  |                                      CONSTRAINT
+  |                                         myTable01_FK REFERENCES myTable01(ID),
+  |   QUANTITY   INTEGER                 NOT NULL CHECK (QUANTITY >= 1) DEFAULT 1,
+  |   RATIO      NUMERIC(5,2)            NOT NULL CHECK (RATIO >= 1.5 ) DEFAULT 2,
+  |   ACTIVE     BOOLEAN                 NOT NULL
+  |   CREATED_AT TIMESTAMPTZ             DEFAULT now()
+  | );
+  | 
+  | -- CREATE NEW INDEX
+  | CREATE IF NOT EXISTS INDEX  MYTABLE01_PUBKEY_IDX ON  myTable01 (PUB_KEY);
+  | 
+  | -- CREATE COMMENTS
+  | COMMENT ON TABLE  myTable01      IS '....';
+  | COMMENT ON COLUMN myTable01.ID   IS '....';
+  | COMMENT ON COLUMN myTable01.NAME IS '....';
+  |
+  | ALTER TABLE myTable01 ADD PRIMARY KEY (ID); ← Alternative to create PRIMARY KEY
+  ```
 
 # ROLES  @[https://www.postgresql.org/docs/9.0/static/sql-alterrole.html]
-  ALTER ROLE name [ [ WITH ] option [ ... ] ]
+  ```
+  | ALTER ROLE name [ [ WITH ] option [ ... ] ]
+  | 
+  | where option can be:
+  |       SUPERUSER  | NOSUPERUSER
+  |     | CREATEDB   | NOCREATEDB
+  |     | CREATEROLE | NOCREATEROLE
+  |     | CREATEUSER | NOCREATEUSER
+  |     | INHERIT    | NOINHERIT
+  |     | LOGIN      | NOLOGIN
+  |     | CONNECTION LIMIT connlimit
+  |     | [ ENCRYPTED | UNENCRYPTED ] PASSWORD 'password'
+  |     | VALID UNTIL 'timestamp'
+  |   ALTER ROLE name RENAME TO new_name
+  | 
+  |   ALTER ROLE name [ IN DATABASE database_name ] SET configuration_parameter { TO | = } { value | DEFAULT }
+  |   ALTER ROLE name [ IN DATABASE database_name ] SET configuration_parameter FROM CURRENT
+  |   ALTER ROLE name [ IN DATABASE database_name ] RESET configuration_parameter
+  |   ALTER ROLE name [ IN DATABASE database_name ] RESET ALL
+  ```
 
-  where option can be:
-        SUPERUSER  | NOSUPERUSER
-      | CREATEDB   | NOCREATEDB
-      | CREATEROLE | NOCREATEROLE
-      | CREATEUSER | NOCREATEUSER
-      | INHERIT    | NOINHERIT
-      | LOGIN      | NOLOGIN
-      | CONNECTION LIMIT connlimit
-      | [ ENCRYPTED | UNENCRYPTED ] PASSWORD 'password'
-      | VALID UNTIL 'timestamp'
-    ALTER ROLE name RENAME TO new_name
+## BACKUP/RESTORE    [disaster_recovery]
 
-    ALTER ROLE name [ IN DATABASE database_name ] SET configuration_parameter { TO | = } { value | DEFAULT }
-    ALTER ROLE name [ IN DATABASE database_name ] SET configuration_parameter FROM CURRENT
-    ALTER ROLE name [ IN DATABASE database_name ] RESET configuration_parameter
-    ALTER ROLE name [ IN DATABASE database_name ] RESET ALL
+  ```
+  | BACKUP                              RESTORE
+  |$ pg_dump ${dbName} > dbName.sql     $ pg_restore -d ddbb_name  -a backup.sql
+  |  └──────┬────────┘                    └──────┬────────┘
+  |  backup full ddbb (schema + data).    restore full ddbb (schema + data).
+  |  (or --data-only | --schema-only )    (or --data-only | --schema-only )
+  |$ pg_dumpall > pgbackup.sql
+  |  └───┬─────┘
+  |  backup all ddbbs
+  ```
 
+## EXPORT/IMPORT (COPY) file
+  ```
+  | \copy myTable01            TO   '/home/user/weather.csv' CSV
+  | \copy myTable01(col1,col2) TO   '/home/user/weather.csv' CSV
+  |  
+  | \copy myTable01            FROM '/home/user/weather.csv' CSV
+  | \copy myTable01(col1,col2) FROM '/home/user/weather.csv' CSV
+  ```
 
-# BACKUP/RESTORE    [disaster_recovery]
-   BACKUP                                  RESTORE
-  $ pg_dump ${dbName} > dbName.sql         $ pg_restore -d ddbb_name  -a backup.sql
-    └──────┬────────┘                        └──────┬────────┘
-    backup full ddbb (schema + data).        restore full ddbb (schema + data).
-    (or --data-only | --schema-only )        (or --data-only | --schema-only )
-  $ pg_dumpall > pgbackup.sql
-    └───┬─────┘
-    backup all ddbbs
+## Table Maintenance
+  ```
+  | VACUUM ANALYZE table;     ← VACUUM: (Compact table after many deletion holes)
+  | 
+  | REINDEX DATABASE dbName;  ← Reindex a database, table or index [performance]
+  ```
 
-<hr/>
-# EXPORT/IMPORT (COPY) file
-\copy myTable01            TO   '/home/user/weather.csv' CSV
-\copy myTable01(col1,col2) TO   '/home/user/weather.csv' CSV
+## Rotate logs [[{01_PM.TODO}]]
 
-\copy myTable01            FROM '/home/user/weather.csv' CSV
-\copy myTable01(col1,col2) FROM '/home/user/weather.csv' CSV
+## AAA "Filters" [[{security.aaa,security.101,devops.101]]
 
-<hr/>
-# Table Maintenance
-VACUUM ANALYZE table;     ← VACUUM: (Compact table after many deletion holes)
+* REF: <https://www.percona.com/blog/2018/09/21/securing-postgresql-as-an-enterprise-grade-environment/>
 
-REINDEX DATABASE dbName;  ← Reindex a database, table or index [performance]
+* Note: "Filter" is an invented but intuitive nomenclature based on IP filters.
 
-@[https://www.postgresql.org/docs/current/static/using-explain.html]
-EXPLAIN SELECT * FROM table; ← Show query plan:                [performance]
+* **WARN**: initial AAA setup allows any local user connect and become ddbb superuser.
+  1. use one `initdb` `-W`|`--pwprompt`|`--pwfile` options
+      to assign a password to the database superuser.
+  2. `set -A md5 | -A password` to disable default trust Authen. mode.
+  3. modify auto-generated *pg_hba.conf* after running initdb and
+      before starting server for the first time.
 
+### 1st Filter: host based (pg_hba.conf) to authorize incoming connections
 
---------------------------------------------------------------------------------
-•Rotate logs [[{01_PM.TODO}]]
+* official doc: <https://www.postgresql.org/docs/devel/static/auth-pg-hba-conf.html>
+
+* IMPORTANT:  order of the entries matters.
+  ```
+  |  host    · ddbb1 · pguser · ip1/32 · md5 R *1            ← connections from 'ip1' only allowed
+  |          ·       ·        ·        ·                      from user pguser and only to ddbb percona.
+  |          ·       ·        ·        ·                      using  md5 password authentication.  *2
+  | 
+  |  hostssl · all   · all    · ip2/32 · md5               ← SSL connections allowed
+  |          ·       ·        ·        ·                      to any user@ip2 to any ddbb
+  | 
+  |  hostssl · all   · all    · ip3/32 · cert clientcert=1 ← SSL connections allowed
+  |          ·       ·        ·        ·                      to any user@192.68.0.13 to any ddbb
+  | └──┬───┘  └─┬──┘   └─┬──┘   └─┬──┘   └──────┬────────┘    presenting valid client cert.  *2
+  |   TYPE     DDBB     USER   IP RANGE   AUTHEN.METHOD
+  |                                       (MD5, SCRAM,SSL certs,
+  |                                        PAM/LDAP, Kerberos,...) *3
+  | 
+  |  *1  MD5 hasing problem: always return same hash for same password.
+  |      - in ver.10+ prefer SCRAM (SHA-256 with salts)
+  |        for extra security against password-dictionary attacks.
+  |  *2  @[https://www.postgresql.org/docs/10/static/ssl-tcp.html]
+  |  *3  @[https://www.postgresql.org/docs/10/static/client-authentication.html]
+  ```
+
+### 2nd Filter: roles and privileges 
+  ```
+  | user 1 ←-·······→ N Roles 1←···········→ M privileges
+  |
+  | developer01 ←─┐*1 dev_read_only              ...
+  | developer02 ←─┴─→ dev_read_write
+  |                   app_read_only
+  |                   app_read_write
+  |                   admin_read_only        ┌→ SELECT on hhrr.employee
+  |                   admin_read_write       ├→ INSERT on hhrr.employee
+  | manager01 ←─*2 ─→ managers ←─┐           ├→ UPDATE on hhrr.employee
+  | manager02 ←─*2 ─→ managers ←─┴───────────┴→ DELETE on hhrr.employee
+  | ^                                  ^                  ^
+  | ·     *1 GRANT dev_read_wite to \  ·     CREATE TABLE hhrr.employee (
+  | ·        developer01, developer02; ·       id INT,
+  | ·                                  ·       first_name VARCHAR(20), ...,
+  | ·     *2 CREATE ROLE managers;     ·       manager VARCHAR(20) );
+  | ·     *2 GRANT managers      to \  ·
+  | ·        manager01, manager02;     ·
+  | ·        ┌·························┘
+  | ·        GRANT SELECT, INSERT, UPDATE, DELETE \
+  | ·        ON hhrr.employee TO managers;
+  | ·
+  | └······· CREATE USER manager01 WITH ENCRYPTED PASSWORD 'manager01';
+  |          CREATE USER manager02 WITH ENCRYPTED PASSWORD 'manager02';
+  ```
+
+### 3rd Filter, Row level Security (9.5+)
+  ```
+  |  INSERT INTO hhrr.employee VALUES \
+  |    (1, 'user01','...','manager01'),
+  |    (2, 'user02','...','manager02'),
+  |    (3, 'user03','...','manager01');
+  |
+  |  GRANT USAGE ON SCHEMA hhrr TO managers;
+  |  ALTER TABLE hhrr.employee ENABLE ROW LEVEL SECURITY;
+  |
+  |  CREATE POLICY employee_managers  ← allows the managers role to
+  |    ON hhrr.employee                 only view/modify their own
+  |    TO managers                      subordinates’ records:
+  |    USING (manager = current_user);
+  |
+  |  $ psql -d ddbb01 -U manager01              $ psql -d ddbb01 -U manager02
+  |  ...                                        ...
+  |  =→  select * from hhrr.employee ;          =→  select * from hhrr.employee ;
+  |  id │ first_name │ last_name │ manager      id │ first_name │ last_name │ manager
+  |  ───┼────────────┼───────────┼─────────    ────┼────────────┼───────────┼─────────
+  |   1 │ user01     │ ...       │ manager01     1 │ user02     │ ...       │ manager02
+  |   3 │ user03     │ ...       │ manager01
+  |   (2 rows)                                   (1 rows)
+  ```
+
+### 4th Filter. DATA AT RESET ENCRYPTION OPTIONS  [[{01_PM.TODO]]
+* <https://www.postgresql.org/docs/10/static/encryption-options.html>
+* The pgcrypto module allows certain fields to be stored encrypted. This
+  is useful if only some of the data is sensitive. The client supplies the
+  decryption key and the data is decrypted on the server and then sent to the client. [[}]]
 [[}]]
 
-# AAA "Filters" [[{security.aaa,security.101,devops.101]]
-  @[https://www.percona.com/blog/2018/09/21/securing-postgresql-as-an-enterprise-grade-environment/]
-  Note: "Filter" is an invented but intuitive nomenclature based on IP filters)
-
-- R*WARN*: initial AAA setup allows any local user connect and become ddbb superuser.
-       1 - use one initdb -W, --pwprompt or --pwfile options
-           to assign a password to the database superuser.
-       2 - set -A md5 | -A password to disable  default trust Authen. mode.
-       3 - modify auto-generated *pg_hba.conf* after running initdb and
-           before starting server for the first time.
-  ┌────────────────────────────────────────────────────────────────────────┐
-  │ 1st Filter: host based (pg_hba.conf) to authorize incoming connections.│
-  └────────────────────────────────────────────────────────────────────────┘
-    official doc: @[https://www.postgresql.org/docs/devel/static/auth-pg-hba-conf.html]
-
-  ● IMPORTANT:  order of the entries matters.
-
-    host    · ddbb1 · pguser · ip1/32 · md5 R *1            ← connections from 'ip1' only allowed
-            ·       ·        ·        ·                      from user pguser and only to ddbb percona.
-            ·       ·        ·        ·                      using  md5 password authentication.  *2
-
-    hostssl · all   · all    · ip2/32 · md5               ← SSL connections allowed
-            ·       ·        ·        ·                      to any user@ip2 to any ddbb
-
-    hostssl · all   · all    · ip3/32 · cert clientcert=1 ← SSL connections allowed
-            ·       ·        ·        ·                      to any user@192.68.0.13 to any ddbb
-   └──┬───┘  └─┬──┘   └─┬──┘   └─┬──┘   └──────┬────────┘    presenting valid client cert.  *2
-     TYPE     DDBB     USER   IP RANGE   AUTHEN.METHOD
-                                         (MD5, SCRAM,SSL certs,
-                                          PAM/LDAP, Kerberos,...) *3
-
-  R *1  MD5 hasing problem: always return same hash for same password.
-        - in ver.10+ prefer SCRAM (SHA-256 with salts)
-          for extra security against password-dictionary attacks.
-    *2  @[https://www.postgresql.org/docs/10/static/ssl-tcp.html]
-    *3  @[https://www.postgresql.org/docs/10/static/client-authentication.html]
-
-  ┌──────────────────────────────────┐
-# │ 2nd Filter: roles and privileges │
-  └──────────────────────────────────┘
-    user 1 ←-·······→ N Roles 1←···········→ M privileges
-
-    developer01 ←─┐*1 dev_read_only              ...
-    developer02 ←─┴─→ dev_read_write
-                      app_read_only
-                      app_read_write
-                      admin_read_only        ┌→ SELECT on hhrr.employee
-                      admin_read_write       ├→ INSERT on hhrr.employee
-    manager01 ←─*2 ─→ managers ←─┐           ├→ UPDATE on hhrr.employee
-    manager02 ←─*2 ─→ managers ←─┴───────────┴→ DELETE on hhrr.employee
-    ^                                  ^                  ^
-    ·     *1 GRANT dev_read_wite to \  ·     CREATE TABLE hhrr.employee (
-    ·        developer01, developer02; ·       id INT,
-    ·                                  ·       first_name VARCHAR(20), ...,
-    ·     *2 CREATE ROLE managers;     ·       manager VARCHAR(20) );
-    ·     *2 GRANT managers      to \  ·
-    ·        manager01, manager02;     ·
-    ·        ┌·························┘
-    ·        GRANT SELECT, INSERT, UPDATE, DELETE \
-    ·        ON hhrr.employee TO managers;
-    ·
-    └······· CREATE USER manager01 WITH ENCRYPTED PASSWORD 'manager01';
-             CREATE USER manager02 WITH ENCRYPTED PASSWORD 'manager02';
-
-  ┌───────────────────────────────────────┐
-# │ 3rd Filter, Row level Security (9.5+) │
-  └───────────────────────────────────────┘
-    INSERT INTO hhrr.employee VALUES \
-      (1, 'user01','...','manager01'),
-      (2, 'user02','...','manager02'),
-      (3, 'user03','...','manager01');
-
-    GRANT USAGE ON SCHEMA hhrr TO managers;
-    ALTER TABLE hhrr.employee ENABLE ROW LEVEL SECURITY;
-
-    CREATE POLICY employee_managers  ← allows the managers role to
-      ON hhrr.employee                 only view/modify their own
-      TO managers                      subordinates’ records:
-      USING (manager = current_user);
-
-    $ psql -d ddbb01 -U manager01              $ psql -d ddbb01 -U manager02
-    ...                                        ...
-    =→  select * from hhrr.employee ;          =→  select * from hhrr.employee ;
-    id │ first_name │ last_name │ manager      id │ first_name │ last_name │ manager
-    ───┼────────────┼───────────┼─────────    ────┼────────────┼───────────┼─────────
-     1 │ user01     │ ...       │ manager01     1 │ user02     │ ...       │ manager02
-     3 │ user03     │ ...       │ manager01
-     (2 rows)                                   (1 rows)
-
-
-#  4th Filter. DATA AT RESET ENCRYPTION OPTIONS  [[{01_PM.TODO]]
-@[https://www.postgresql.org/docs/10/static/encryption-options.html]
-  - The pgcrypto module allows certain fields to be stored encrypted. This
-    is useful if only some of the data is sensitive. The client supplies the
-    decryption key and the data is decrypted on the server and then sent to the client. [[}]]
+## pg_file_settings                                                      [[{01_PM.TODO.101]]
+* <https://www.postgresql.org/docs/10/static/view-pg-file-settings.html>
+* <https://www.postgresql.org/docs/10/static/config-setting.html>
+* Server instance configuration
+* can be used to debug or pre-test changes in configuration
 [[}]]
 
-# pg_file_settings                                                      [[{01_PM.TODO.101]]
- @[https://www.postgresql.org/docs/10/static/view-pg-file-settings.html
- @[https://www.postgresql.org/docs/10/static/config-setting.html]
-- Server instance configuration
-- can be used to debug or pre-test changes in configuration
-[[}]]
-
-# postgresql.conf (Resource tunning) [[{devops.101,01_PM.low_code,performance.troubleshooting]]
+## postgresql.conf (Resource tunning) [[{devops.101,01_PM.low_code,performance.troubleshooting]]
 @[https://www.postgresql.org/docs/10/static/config-setting.html]
 
-- Set config Settings for logs, buffers, cahce, ...
-  - Re-read changes with *SIGHUP*signal or $*pg_ctl reload*
+* Set config Settings for logs, buffers, cahce, ...
+  * Re-read changes with *SIGHUP*signal or $*pg_ctl reload*
 
- *PGConfig*: Online postgresql.conf tool: [low_code][perfomance]
-@[https://www.pgconfig.org/].
+###  PGConfig: Online postgresql.conf tool: [[{PM.low_code,perfomance]]
+* <https://www.pgconfig.org/>
 
- Example INPUT:            →  OUTPUT
+ ```
+ | Example INPUT:            →  OUTPUT
+ |
+ | DB Version: 13               max_connections = 20
+ | OS Type: linux               shared_buffers = 3840MB
+ | DB Type: web                 effective_cache_size = 11520MB
+ | Total Memory (RAM): 15 GB    maintenance_work_mem = 960MB
+ | CPUs num: 4                  checkpoint_completion_target = 0.7
+ | Connections num: 20          wal_buffers = 16MB
+ | Data Storage: ssd            default_statistics_target = 100
+ |                              random_page_cost = 1.1
+ |                              effective_io_concurrency = 200
+ |                              work_mem = 96MB
+ |                              min_wal_size = 1GB
+ |                              max_wal_size = 4GB
+ |                              max_worker_processes = 4
+ |                              max_parallel_workers_per_gather = 2
+ |                              max_parallel_workers = 4
+ |                              max_parallel_maintenance_workers = 2
+ ```
+[[}]]
 
- DB Version: 13               max_connections = 20
- OS Type: linux               shared_buffers = 3840MB
- DB Type: web                 effective_cache_size = 11520MB
- Total Memory (RAM): 15 GB    maintenance_work_mem = 960MB
- CPUs num: 4                  checkpoint_completion_target = 0.7
- Connections num: 20          wal_buffers = 16MB
- Data Storage: ssd            default_statistics_target = 100
-                              random_page_cost = 1.1
-                              effective_io_concurrency = 200
-                              work_mem = 96MB
-                              min_wal_size = 1GB
-                              max_wal_size = 4GB
-                              max_worker_processes = 4
-                              max_parallel_workers_per_gather = 2
-                              max_parallel_workers = 4
-                              max_parallel_maintenance_workers = 2
 
-
- *PgTune Config.Wizard* [low_code][perfomance]
-@[https://github.com/gregs1104/pgtune]
-- Python script taking the wimpy default postgresql.conf and
+### PgTune Config.Wizard [[{PM.low_code,perfomance]]
+* <https://github.com/gregs1104/pgtune>
+* Python script taking the wimpy default postgresql.conf and
 expanding the cluster server to be as powerful as the hardware it's
 being deployed on.
 [[}]]
 
-# Logging in PostgreSQL                            [[{monitor]]
-- log either:
-  - all of the statements
-  - a few statements based on parameter settings.
-  You can log all the DDLs or DMLs or any statement running for more
-than a certain duration to the log file when logging_collector is
-enabled. To avoid write overload to the data directory, you may also
-move your log_directory to a different location. Here’s a few
-important parameters you should review when logging activities in
-your PostgreSQL server:
+## Logging in PostgreSQL   [[{monitor]]
+* log either:
+  * all of the statements
+  * a few statements based on parameter settings.
 
-  - log_connections
-  - log_disconnections
-  - log_lock_waits
-  - log_statement
-  - log_min_duration_statement
-
-- Please note that detailed logging takes additional disk space and may
+* You can log all the DDLs or DMLs or any statement running for more
+  than a certain duration to the log file when logging_collector is
+  enabled. To avoid write overload to the data directory, you may also
+  move your log_directory to a different location. Here’s a few
+  important parameters you should review when logging activities in
+  your PostgreSQL server:
+  * log_connections
+  * log_disconnections
+  * log_lock_waits
+  * log_statement
+  * log_min_duration_statement
+* Please note that detailed logging takes additional disk space and may
   impose an important overhead in terms of write IO depending on the
   activity in your PostgreSQL server. You should be careful when
   enabling logging and should only do so after understanding the
   overhead and performance degradation it may cause to your workload.
 [[}]]
 
-# PostgreSQL performance tunning, general guidelines:  [[{performance.101]]
-- Enable autovacuum. The working memory for autovacuum should be no more than 2% of
-    the total available memory.
-- Enable database caching with an effective cache size between 6% and 8% of the total
-    available memory.
-- To increase performance, the working memory should be at least 10% of the total
-    available
+# PostgreSQL performance tunning, general guidelines  [[{performance.101]]
+* Enable autovacuum. The working memory for autovacuum should be no more than 2% of
+  the total available memory.
+* Enable database caching with an effective cache size between 6% and 8% of the total
+  available memory.
+* To increase performance, the working memory should be at least 10% of the total
+  available
   Set SERVER_ENCODING , LC_COLLATE and LC_CTYPE as :
-    server_encoding = UTF8
-    lc_collate = en_US.UTF-8
-    lc_ctype = en_US.UTF-8
--
-(Shared Memory/Semaphores/...):
-- Show all runtime parameters:
- *#- SHOW ALL;*
+  ```
+  | server_encoding = UTF8
+  | lc_collate = en_US.UTF-8
+  | lc_ctype = en_US.UTF-8
+  ```
+* (Shared Memory/Semaphores/...):
+* Show all runtime parameters:
+  ```
+  #- SHOW ALL;*
+  ```
 [[}]]
 
 # Linux performance tunning, general guidelines:  [[{performance,storage.RAID,]]
-  https://paquier.xyz/postgresql-2/tuning-disks-and-linux-for-postgres.markdown/
 
-  - Choose correct RAID strategy:
-    RAID0 :  more disks, more performance, more risk of data loss.
-    RAID1 :  good for medium workloads redundancy.  Good performance for read applications
-    RAID5 :  should be used for large workloads with more than 3 disks.
+* <https://paquier.xyz/postgresql-2/tuning-disks-and-linux-for-postgres.markdown/>
 
-  - File systems:
-    - ext4: fast and stable.
-    - xfs : good performance for many parallel processes.
-    - FS "noatime" must be disabled: The database server does not use the info about file update times.
-    - put data-folder on a separate disk.
-    - Separate certain tables highly read or written on dedicated disks.
-    - Try to put 'pg_xlog' on isolated disk.
-
-  - I/O scheduler (/sys/block/$DISK_NAME/queue/scheduler)
-    - deadline: can offer good response times with mix of read/write loads and maintains a good throughput.
-                Choose this wisely depending on your hardware though!
-    - noop    :
-    - "anything wanted":
-
-  - Linux readahead:
+* Choose correct RAID strategy:
+  * RAID0 :  more disks, more performance, more risk of data loss.
+  * RAID1 :  good for medium workloads redundancy.  Good performance for read applications
+  * RAID5 :  should be used for large workloads with more than 3 disks.
+* File systems:
+  * ext4: fast and stable.
+  * xfs : good performance for many parallel processes.
+  * FS "noatime" must be disabled: The database server does not use the info about file update times.
+  * put data-folder on a separate disk.
+  * Separate certain tables highly read or written on dedicated disks.
+  * Try to put 'pg_xlog' on isolated disk.
+* I/O scheduler (/sys/block/$DISK_NAME/queue/scheduler)
+  * deadline: can offer good response times with mix of read/write loads and maintains a good throughput.
+              Choose this wisely depending on your hardware though!
+  * noop    :
+  * "anything wanted":
+  * Linux readahead:
     Allowing to put a file's content into page cache instead of disk, making reading this file faster when
     it is subsequently accessed.
-    - Can be set with:
-    $ blockdev -setra (-getra to read it)
-    - On most of distributions it is set on a low value, 256~1024 512blocks /(128kB~512kB).
-    - A higher value can really improve sequential scans for large tables,
+    * Can be set with: `$ blockdev -setra (-getra to read it)`
+    * On most of distributions it is set on a low value, 256~1024 512blocks /(128kB~512kB).
+    * A higher value can really improve sequential scans for large tables,
       as well as index scans on a large number of rows.
-      - Start up with 4096 and see the results! Besides.
-      - Be aware that values higher than 16MB (32768 for 512 byte sectors) do not show
-       that much performance gain (thanks Dimitri Fontaine for this info!).
+      * Start up with 4096 and see the results! Besides.
+      * Be aware that values higher than 16MB (32768 for 512 byte sectors) do not show
+        that much performance gain (thanks Dimitri Fontaine for this info!).
+  * Transparent Huge Pages (THP) problems
+    * REF: <https://docs.mongodb.com/manual/tutorial/transparent-huge-pages/>
+    * Transparent Huge Pages (THP) is a Linux memory management system that reduces
+      the overhead of Translation Lookaside Buffer (TLB) lookups on machines with
+      large amounts of memory by using larger memory pages.
+      However, database workloads often perform poorly with THP enabled, because they
+      tend to have sparse rather than contiguous memory access patterns. When running
+      MongoDB on Linux, THP should be disabled for best performance.
+    * TODO: Does the same problem applies to PSQL?
 
-  - Transparent Huge Pages (THP) problems
-    From  @[https://docs.mongodb.com/manual/tutorial/transparent-huge-pages/]
-    TODO: Does the same problem applies to PSQL?
-    Transparent Huge Pages (THP) is a Linux memory management system that reduces
-    the overhead of Translation Lookaside Buffer (TLB) lookups on machines with
-    large amounts of memory by using larger memory pages.
-
-    However, database workloads often perform poorly with THP enabled, because they
-    tend to have sparse rather than contiguous memory access patterns. When running
-    MongoDB on Linux, THP should be disabled for best performance.
-
-  REF: https://postgreshelp.com/postgresql-kernel-parameters/  [[{01_PM.TODO}]]
+* See also: <https://postgreshelp.com/postgresql-kernel-parameters/>  [[{01_PM.TODO}]]
 [[}]]
 
+# Network latency does BIG difference [[{performance.network,performance.101]]
+* <https://www.cybertec-postgresql.com/en/postgresql-network-latency-does-make-a-big-difference/>
+(Measuring the performance impact caused by latency)
 
-# Network latency does BIG difference [[{performance.network]]
-https://www.cybertec-postgresql.com/en/postgresql-network-latency-does-make-a-big-difference/
-
-- Measuring the performance impact caused by latency
-
-- "tc": linux command to control network settings in Linux kernel.
+* "tc": linux command to control network settings in Linux kernel.
   It allows you to do all kinds of trickery such as adding latency,
   bandwidth limitations and so on.
-- tcconfig: python wrapper around tc.
-  $ sudo pip3 install tcconfig
 
-- compare performance vs network latency:
-  $ createdb test
-  $ pgbench -i test
-  dropping old tables...
-  ...
-  generating data...
-  100000 of 100000 tuples (100%) done (elapsed 0.11 s, remaining 0.00 s)
-  vacuuming...
-  creating primary keys...
+* tcconfig: python wrapper around tc.
+  ```$ sudo pip3 install tcconfig```
 
-
-   NO Network Latency                           10 ms Network latency
-                                                (# tcset --device lo --delay=10)
-   $ pgbench -S -c 10 -h localhost \            $ pgbench -S -c 10 -h localhost \
-     -T 20 test                                   -T 20 test
-   starting vacuum...end.                       starting vacuum...end.
-   transaction type:                            transaction type:
-   scaling factor: 1                            scaling factor: 1
-   query mode: simple                           query mode: simple
-   number of clients: 10                        number of clients: 10
-   number of threads: 1                         number of threads: 1
-   duration: 20 s                               duration: 20 s
-   number of TX processed: 176300               number of TX processed: 9239
-   latency average = 1.135 ms                   latency average = 21.660 ms
-  *tps = 8813.741733*...                      R*tps = 461.687712*(...)
-                                                      ^^^
-                                                      20 times slower!!!.
-                                                      Specailly painful on OLTP application
-                                                      (sort queries)
-                                                With 50ms performance drops 100xtimes!!
+* compare performance vs network latency:
+  ```
+  | $ createdb test
+  | $ pgbench -i test
+  | dropping old tables...
+  | ...
+  | generating data...
+  | 100000 of 100000 tuples (100%) done (elapsed 0.11 s, remaining 0.00 s)
+  | vacuuming...
+  | creating primary keys...
+  | 
+  |  NO NETWORK LATENCY                  10 MS NETWORK LATENCY
+  |                                      (# tcset --device lo --delay=10)
+  │  ─────────────────────────────────   ────────────────────────────────
+  |  $ pgbench -S -c 10 -h localhost \   $ pgbench -S -c 10 -h localhost \
+  |    -T 20 test                          -T 20 test
+  |  starting vacuum...end.              starting vacuum...end.
+  |  transaction type:                   transaction type:
+  |  scaling factor: 1                   scaling factor: 1
+  |  query mode: simple                  query mode: simple
+  |  number of clients: 10               number of clients: 10
+  |  number of threads: 1                number of threads: 1
+  |  duration: 20 s                      duration: 20 s
+  |  number of TX processed: 176300      number of TX processed: 9239
+  |  latency average = 1.135 ms          latency average = 21.660 ms
+  | *tps = 8813.741733*...              *tps = 461.687712*(...)
+  |                                            ^^^
+  |                                      20 times slower!!!.
+  |                                      Specailly painful on OLTP application
+  |                                      (sort queries)
+  |                                      With 50ms performance drops 100xtimes!!
+  ```
 [[}]]
-
 
 # BLOB cleanup [[{storage.blob]]
-https://www.cybertec-postgresql.com/en/blob-cleanup-in-postgresql/
-by Hans-Jürgen Schönig
 
-- bytea : simplest form to use binary data. up to  *1 GB per field*!!.
-          The binary field is seen as part of a row. Ex:
-          # CREATE TABLE t_image (id int, name text,*image bytea*);
-          ...
-          # SHOW bytea_output;
-            bytea_output
-            ──────────────
-            hex            ← encoding. Send the data in hex format.(vs "escape" == octal string).
-            (1 row)
+* REF: <https://www.cybertec-postgresql.com/en/blob-cleanup-in-postgresql/>
+  by Hans-Jürgen Schönig
 
-- BLOBs : More versatile. Ex:
-          # SELECT lo_import('/etc/hosts');  ← /etc/hosts imported (copy -vs link- of data)
-          lo_import
-          ───────────
-          80343        ← new OID (object ID) of the new entry.
-          (1 row)
+* bytea : simplest form to use binary data. up to  *1 GB per field*!!.
+  The binary field is seen as part of a row. Ex:
+  ```
+  | # CREATE TABLE t_image (id int, name text,*image bytea*);
+  | ...
+  | # SHOW bytea_output;
+  |   bytea_output
+  |   ──────────────
+  |   hex         <·· encoding. Send the data in hex format.
+  |   (1 row)         (vs "escape" == octal string).
+  ```
+* BLOBs : More versatile. Ex:
+  ```
+  | # SELECT lo_import('/etc/hosts');  ← /etc/hosts imported (copy -vs link- of data)
+  | lo_import
+  | ───────────
+  | 80343        ← new OID (object ID) of the new entry.
+  | (1 row)
+  |
+  | - To keep trace of new OIDs we can do something like:
+  | # CREATE TABLE t_file ( id int, name text, object_id oid);
+  |
+  | # INSERT INTO t_file VALUES
+  |   (1, 'some_name', lo_import('/etc/hosts'))
+  |
+  | # DELETE FROM t_file WHERE id = 1;
+  |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  | R*PROBLEM*: object id has been "forgotten".
+  |   but it is still there.
+  |  *'pg_largeobject'*is the*system table*in charge
+  |   of storing the binary data inside PostgreSQL.
+  |   All lo_* functions "talk" to this system table
+  |
+  | # \x ← Expanded display is on
+  | test=# SELECT * FROM pg_largeobject WHERE loid = 80350;
+  | ─[ RECORD 1 ]──────────────────────────────────────────
+  | loid   | 80350       ← R*Dead object*
+  | pageno | 0
+  | data   | ##\012# Host Database\012#\012# localhost ...
+  |
+  |
+  | # SELECT lo_unlink(80350);  *Correct way to clean BLO *
+  |
+  | # SELECT * FROM pg_largeobject  ← Recheck
+  |   WHERE loid = 80350;
+  | (0 rows)                        ← OK
+  ```
 
-          - To keep trace of new OIDs we can do something like:
-          # CREATE TABLE t_file ( id int, name text, object_id oid);
+* Automated cleaning of dead large objects:
+  ```
+  | $ vacuumlo -h localhost -v test         
+  | ...                                     
+  | Successfully removed 2 large objects ...
+  ```
 
-          # INSERT INTO t_file VALUES
-            (1, 'some_name', lo_import('/etc/hosts'))
+* Other functions provided by PSQL for large objects include:
 
-          # DELETE FROM t_file WHERE id = 1;
-            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-          R*PROBLEM*: object id has been "forgotten".
-            but it is still there.
-           *'pg_largeobject'*is the*system table*in charge
-            of storing the binary data inside PostgreSQL.
-            All lo_* functions "talk" to this system table
+  ```
+  | # \df lo_*
+  |                                 List of functions
+  |    Schema   |   Name        | Result data type | Argument data types       | Type
+  | ────────────┼───────────────┼──────────────────┼───────────────────────────┼──────
+  |  pg_catalog | lo_close      | integer          | integer                   | func
+  |  pg_catalog | lo_creat      | oid              | integer                   | func
+  |  pg_catalog | lo_create     | oid              | oid                       | func
+  |  pg_catalog | lo_export     | integer          | oid, text                 | func
+  |  pg_catalog | lo_from_bytea | oid              | oid, bytea                | func
+  |  pg_catalog | lo_get        | bytea            | oid                       | func
+  |  pg_catalog | lo_get        | bytea            | oid, bigint, integer      | func
+  |  pg_catalog | lo_import     | oid              | text                      | func
+  |  pg_catalog | lo_import     | oid              | text, oid                 | func
+  |  pg_catalog | lo_lseek      | integer          | integer, integer, integer | func
+  |  pg_catalog | lo_lseek64    | bigint           | integer, bigint, integer  | func
+  |  pg_catalog | lo_open       | integer          | oid, integer              | func
+  |  pg_catalog | lo_put        | void             | oid, bigint, bytea        | func
+  |  pg_catalog | lo_tell       | integer          | integer                   | func
+  |  pg_catalog | lo_tell64     | bigint           | integer                   | func
+  |  pg_catalog | lo_truncate   | integer          | integer, integer          | func
+  |  pg_catalog | lo_truncate64 | integer          | integer, bigint           | func
+  |  pg_catalog | lo_unlink     | integer          | oid                       | func
+  | (18 rows)
+  |
+  |  pg_catalog | loread        | bytea            | integer, integer          | func
+  |  pg_catalog | lowrite       | integer          | integer, bytea            | func
+  ```
 
-          # \x ← Expanded display is on
-          test=# SELECT * FROM pg_largeobject WHERE loid = 80350;
-          ─[ RECORD 1 ]──────────────────────────────────────────
-          loid   | 80350       ← R*Dead object*
-          pageno | 0
-          data   | ##\012# Host Database\012#\012# localhost ...
-
-
-          # SELECT lo_unlink(80350);  *Correct way to clean BLO *
-
-          # SELECT * FROM pg_largeobject  ← Recheck
-            WHERE loid = 80350;
-          (0 rows)                        ← OK
-
-   - *Automated cleaning of dead large objects*
-
-    $*$ vacuumlo -h localhost -v test          *
-    $*...                                      *
-    $*Successfully removed 2 large objects ... *
-
-    Other functions provided by PSQL for large objects include:
-
-   # \df lo_*
-                                   List of functions
-      Schema   |   Name        | Result data type | Argument data types       | Type
-   ────────────┼───────────────┼──────────────────┼───────────────────────────┼──────
-    pg_catalog | lo_close      | integer          | integer                   | func
-    pg_catalog | lo_creat      | oid              | integer                   | func
-    pg_catalog | lo_create     | oid              | oid                       | func
-    pg_catalog | lo_export     | integer          | oid, text                 | func
-    pg_catalog | lo_from_bytea | oid              | oid, bytea                | func
-    pg_catalog | lo_get        | bytea            | oid                       | func
-    pg_catalog | lo_get        | bytea            | oid, bigint, integer      | func
-    pg_catalog | lo_import     | oid              | text                      | func
-    pg_catalog | lo_import     | oid              | text, oid                 | func
-    pg_catalog | lo_lseek      | integer          | integer, integer, integer | func
-    pg_catalog | lo_lseek64    | bigint           | integer, bigint, integer  | func
-    pg_catalog | lo_open       | integer          | oid, integer              | func
-    pg_catalog | lo_put        | void             | oid, bigint, bytea        | func
-    pg_catalog | lo_tell       | integer          | integer                   | func
-    pg_catalog | lo_tell64     | bigint           | integer                   | func
-    pg_catalog | lo_truncate   | integer          | integer, integer          | func
-    pg_catalog | lo_truncate64 | integer          | integer, bigint           | func
-    pg_catalog | lo_unlink     | integer          | oid                       | func
-   (18 rows)
-
-    pg_catalog | loread        | bytea            | integer, integer          | func
-    pg_catalog | lowrite       | integer          | integer, bytea            | func
-
-  - BLOB interface is fully transactional: binary content and metadata cannot go
-    out of sync anymore.
+- BLOB interface is fully transactional: binary content and metadata cannot go
+  out of sync anymore.
 [[}]]
 
-[[{]]
-# pghero ----------------------------------------------------------------------
-@[https://github.com/ankane/pghero]     [01_PM.low_code]
-- performance dashboard for Postgres
 
-# What are these slow COMMIT in my PostgreSQL logs? ---------------------------
-https://yhuelf.github.io/2021/09/30/pg_stat_statements_bottleneck.html
-Linux, perf flame: What are these slow COMMIT in my PostgreSQL logs? | Frédéric Yhuel, PostgreSQL DBA
-https://yhuelf.github.io/2021/09/30/pg_stat_statements_bottleneck.html
+# SQL Optimizations: IN vs EXISTS vs ANY/ALL vs JOIN  [[{101,performance.101]]
+* <https://www.percona.com/blog/2020/04/16/sql-optimizations-in-postgresql-in-vs-exists-vs-any-all-vs-join/>
 
-# Parallel queries
-@[https://www.percona.com/blog/2019/02/21/parallel-queries-in-postgresql/]
-
-# SQL Optimizations: IN vs EXISTS vs ANY/ALL vs JOIN  [01_PM.101]
-https://www.percona.com/blog/2020/04/16/sql-optimizations-in-postgresql-in-vs-exists-vs-any-all-vs-join/
-
-There are multiple ways in which a sub select or lookup can be framed
+ There are multiple ways in which a sub select or lookup can be framed
 in a SQL statement. PostgreSQL optimizer is very smart at optimizing
 queries, and many of the queries can be rewritten/transformed for
 better performance.
@@ -721,200 +667,160 @@ better performance.
 In general, I used to suggest to developers that the key to writing a
 good SQL statement is to follow step by step process.
 
-- First, make a list of tables from which the data should be retrieved.
-- Then think about how to JOIN those tables.
-- Think about how to have the minimum records participating in the join condition.
-
-# Citus: Scale-Out Clustering and Sharding [[{architecture.scalability,01_PM.TODO}]]
-@[https://www.xaprb.com/blog/citus/]
-
-I wrote yesterday about Vitess, a scale-out sharding solution for
-MySQL. Another similar product is Citus, which is a scale-out
-sharding solution for PostgreSQL. Similar to Vitess, Citus is
-successfully being used to solve problems of scale and performance
-that have previously required a lot of custom-built middleware.
-
-Citus solves the following problems for users:
-- Sharding. Citus handles all of the sharding, so applications do not
-  need to be shard-aware.
-- Multi-tenancy. Applications built to colocate multiple customers’
-  databases on a shared cluster—like most SaaS applications—are
-  called multi-tenant. Sharding, scaling, resharding, rebalancing, and
-  so on are common pain points in modern SaaS platforms, all of which
-  Citus solves.
-- Analytics. Citus is not exclusively an analytical database, but it
-  certainly is deployed for distributed, massively parallel analytics
-  workloads a lot. Part of this is because Citus supports complex
-  queries, building upon Postgres’s own very robust SQL support.
-  Citus can shard queries that do combinations of things like
-  distributed GROUP BY and JOIN together.
-
-· Citus is not middleware: it’s an extension to Postgres that
-  turns a collection of nodes into a clustered database. This means
-  that all of the query rewriting, scatter-gather MPP processing, etc
-  happens within the PostgreSQL server process, so it can take
-  advantage of lots of PostgreSQL’s existing codebase and
-  functionality.
-
-· Citus runs on standard, unpatched PostgreSQL servers. The only
-  modification is installing the extensions into the server. This is a
-  unique and extremely important advantage: most clustered databases
-  that are derived from another database inevitably lag behind and get
-  stuck on an old version of the original database, unable to keep up
-  with the grueling workload of constantly refactoring to build on new
-  releases. Not so for Citus, which doesn’t fork Postgres—it
-  extends it with Postgres’s own extension mechanisms. This means
-  that Citus is positioned to continue innovating on its own software,
-  while continuing to benefit from the strong progress that the
-  PostgreSQL community is delivering on a regular cadence too.
-
-# Execution plans explained
-  See also: @[https://explain.dalibo.com/]
-
-  EXPLAIN ANALYZE is a prefix to a regular query that
-  explains why a query will take a certain amount of time, instead of
-  actually executing it.
-
-  Ex:
-=> EXPLAIN ANALYZE
-   SELECT * FROM some_view
-     WHERE nspname not in
-       ('pg_catalog', 'information_schema') order by 1, 2, 3;
-
-   QUERY PLAN
--------------------------------------------------
- Sort  (cost=146.63..148.65 rows=808 width=138) (actual time=55.009..55.012 rows=71 loops=1)
-   Sort Key: n.nspname, p.proname, (pg_get_function_arguments(p.oid))
-   Sort Method: quicksort  Memory: 43kB
-   →  Hash Join  (cost=1.14..107.61 rows=808 width=138) (actual time=42.495..54.854 rows=71 loops=1)
-         Hash Cond: (p.pronamespace = n.oid)
-         →  Seq Scan on pg_proc p  (cost=0.00..89.30 rows=808 width=78) (actual time=0.052..53.465 rows=2402 loops=1)
-               Filter: pg_function_is_visible(oid)
-         →  Hash  (cost=1.09..1.09 rows=4 width=68) (actual time=0.011..0.011 rows=4 loops=1)
-               Buckets: 1024  Batches: 1  Memory Usage: 1kB
-               →  Seq Scan on pg_namespace n  (cost=0.00..1.09 rows=4 width=68) (actual time=0.005..0.007 rows=4 loops=1)
-                     Filter: ((nspname <> 'pg_catalog'::name) AND (nspname <> 'information_schema'::name))
-
-
-https://github.com/dalibo/pev2
-
-
-A VueJS component to show a graphical vizualization of a PostgreSQL execution plan.
-
-https://explain.depesz.com/
-
-# DETAILED shell script + dockerized run: [[{devops.containerization.101,devops.shell_script]]
-#-----------------------------------------------
-D_RUN_OPTS=""                                     # DOCKER RUN SPECIFIC OPTIONS
-D_RUN_OPTS="${D_RUN_OPTS} --rm \ "                # <- Remove docker image after execution
-D_RUN_OPTS="${D_RUN_OPTS} --network host \ "      # <- Optinionated. Use any suitable network
-D_RUN_OPTS="${D_RUN_OPTS} -i "                    # <- Interactive (Create STDIN for container)
-D_RUN_OPTS="${D_RUN_OPTS} -e PGUSER=USER01 \"     # <- Inject user (WARN: --username takes precedence)
-D_RUN_OPTS="${D_RUN_OPTS} -e PGPASSWORD=MYPASS "  # <- Inject password
-#-----------------------------------------------
-# psql Non-interactive mode. Exec query and exit
-# REF: https://dba.stackexchange.com/questions/77917/psql-run-commands-in-batch-mode
-# REF: https://stackoverflow.com/questions/45352374/psql-non-select-how-to-remove-formatti    ng-and-show-only-certain-columns
-PSQL_OPTS="${PSQL_OPTS} -q "                   # quiet (recomended for automated scripts)
-PSQL_OPTS="${PSQL_OPTS} -t "                   # Print only tuples (remove header/footer)
-PSQL_OPTS="${PSQL_OPTS} -A "                   # un(A)ligned output
-PSQL_OPTS="${PSQL_OPTS} -X "                   # ignore .psqlrc
-PSQL_OPTS="${PSQL_OPTS} -v ON_ERROR_STOP=1 "
-PSQL_OPTS="${PSQL_OPTS} -P pager=off "
-PSQL_OPTS="${PSQL_OPTS} --single-transaction " # Opinionated.
-PSQL_OPTS="${PSQL_OPTS} --username=postgres "  # It will overwrite PGUSER injected env.var.
-PSQL_OPTS="${PSQL_OPTS} --dbname=myDatabase "  #
-PSQL_OPTS="${PSQL_OPTS} -h localhost "         # host to connect to.
-PSQL_OPTS="${PSQL_OPTS} -p 5432 "              # Port to connect to.
-#-----------------------------------------------
-(                                      <┐
-  cat << __EOF                          │
-    SET search_path = schema01;         │  script bash
-    SELECT TO_TIMESTAMP(secTSRegistry)  │  Any STDOUT(put) from ( ... )
-    FROM   schema01.table01             ├─ will be injected as STDIN(put)
-    WHERE TO_TIMESTAMP(secTSRegistry)   │  to psql.
-          > NOW() - INTERVAL '10 DAY'   │
-__EOF                                   │
-) | \                                  <┘
-  docker run ${D_RUN_OPTS} \
-    postgres:14.5 \                    <- Use oficial image with given 14.5 version
-    psql ${PSQL_OPTS} \
-    'COPY FROM STDIN'                  <- Take SQL INPUT from STDIN
+* First, make a list of tables from which the data should be retrieved.
+* Then think about how to JOIN those tables.
+* Think about how to have the minimum records participating in the join condition.
 [[}]]
 
-# Speed up queries 100x times using UNION [[{01_PM.TODO.101,01_PM.TODO}]]
-https://www.foxhound.systems/blog/sql-performance-with-union/
+# Execution plans explained [[{101,performance.101]]
+* REF: <https://explain.dalibo.com/>
 
-One of the most common cases where SQL query performance can degrade
-significantly is in a diamond shaped schema, where there are multiple
-ways of joining two tables together. In such a schema, a query is
-likely to use OR to join tables in more than one way, which
-eliminates the optimizer’s ability to create an efficient query
-plan. This scenario is best illustrated through an example.
+* EXPLAIN ANALYZE is a prefix to a regular query that
+  explains why a query will take a certain amount of time, instead of
+  actually executing it. Ex:
+  ```
+  | => EXPLAIN ANALYZE
+  |    SELECT * FROM some_view
+  |      WHERE nspname not in
+  |        ('pg_catalog', 'information_schema') order by 1, 2, 3;
+  | 
+  |    QUERY PLAN
+  | -------------------------------------------------
+  |  Sort  (cost=146.63..148.65 rows=808 width=138) (actual time=55.009..55.012 rows=71 loops=1)
+  |    Sort Key: n.nspname, p.proname, (pg_get_function_arguments(p.oid))
+  |    Sort Method: quicksort  Memory: 43kB
+  |    →  Hash Join  (cost=1.14..107.61 rows=808 width=138) (actual time=42.495..54.854 rows=71 loops=1)
+  |          Hash Cond: (p.pronamespace = n.oid)
+  |          →  Seq Scan on pg_proc p  (cost=0.00..89.30 rows=808 width=78) (actual time=0.052..53.465 rows=2402 loops=1)
+  |                Filter: pg_function_is_visible(oid)
+  |          →  Hash  (cost=1.09..1.09 rows=4 width=68) (actual time=0.011..0.011 rows=4 loops=1)
+  |                Buckets: 1024  Batches: 1  Memory Usage: 1kB
+  |                →  Seq Scan on pg_namespace n  (cost=0.00..1.09 rows=4 width=68) (actual time=0.005..0.007 rows=4 loops=1)
+  |                      Filter: ((nspname <> 'pg_catalog'::name) AND (nspname <> 'information_schema'::name))
+  ```
+[[}]]
+
+## Pev2
+* https://github.com/dalibo/pev2
+* VueJS component to show a graphical vizualization of a PostgreSQL execution plan.
+* https://explain.depesz.com/
 
 
-                                stores
-                                +---------+------+
-     customers            +----→| id      | int  |←----------------+
-     +----------+------+  |     | address | text |                 |
-+---→| id       | int  |  |     +---------+------+                 |
-|    | name     | text |  |                                        |
-|    | store_id | int  +--+                   employees            |
-|    +----------+------+                      +----------+------+  |
-|                                      +-----→| id       | int  |  |
-|                                      |      | name     | text |  |
-|  customer_orders                     |      | role     | text |  |
-|  +-------------+-----------+         |      | store_id | int  +--+
-|  | id          | int       |←--+     |      +----------+------+
-+--+ customer_id | int       |   |     |
-   | created     | timestamp |   |     |
-   +-------------+-----------+   |     |  employee_markouts
-                                 |     |  +--------------+-----------+
-                                 |     |  | id           | int       |
-    customer_order_items         |     +--+ employee_id  | int       |
-    +-------------------+-----+  |        | meal_item_id | int       +--+
-    | id                | int |  |        | created      | timestamp |  |
-    | customer_order_id | int +--+        +--------------+-----------+  |
- +--+ meal_item_id      | int |                                         |
- |  +-------------------+-----+                                         |
- |                                 meal_items                           |
- |                                 +-------+------+                     |
- +--------------------------------→| id    | int  |←--------------------+
-                                   | label | text |
-                                   | price | int  |
-                                   +-------+------+
+# Containerization 101
 
-# performance tips and tricks -------------------------------------------------
-@[https://marmelab.com/blog/2019/02/13/how-to-improve-postgres-performances.html]
+* Crunchy low-code deployments [[{01_PM.low_code,01_PM.TODO.101}]]
+  * <https://crunchydata.github.io/crunchy-containers/>
+     The Crunchy Container Suite provides Docker containers that enable
+  rapid deployment of PostgreSQL, including administration and
+  monitoring tools. Multiple styles of deploying PostgreSQL clusters
+  are supported.
+* DETAILED shell script + dockerized run: [[{devops.containerization.101,devops.shell_script]]
 
-- Investigating on database performance is a long journey, but to sum up, you should:
-  - Track your database to gather logs
-  - Extract the most relevant information
-  - Identify the issues
-  - Address them one by one
+  ```
+  | D_RUN_OPTS=""                                     # DOCKER RUN SPECIFIC OPTIONS
+  | D_RUN_OPTS="${D_RUN_OPTS} --rm \ "                # <- Remove docker image after execution
+  | D_RUN_OPTS="${D_RUN_OPTS} --network host \ "      # <- Optinionated. Use any suitable network
+  | D_RUN_OPTS="${D_RUN_OPTS} -i "                    # <- Interactive (Create STDIN for container)
+  | D_RUN_OPTS="${D_RUN_OPTS} -e PGUSER=USER01 \"     # <- Inject user (WARN: --username takes precedence)
+  | D_RUN_OPTS="${D_RUN_OPTS} -e PGPASSWORD=MYPASS "  # <- Inject password
+  | #-----------------------------------------------
+  | # psql Non-interactive mode. Exec query and exit
+  | # REF: https://dba.stackexchange.com/questions/77917/psql-run-commands-in-batch-mode
+  | # REF: https://stackoverflow.com/questions/45352374/psql-non-select-how-to-remove-formatti    ng-and-show-only-certain-columns
+  | PSQL_OPTS="${PSQL_OPTS} -q "                   # quiet (recomended for automated scripts)
+  | PSQL_OPTS="${PSQL_OPTS} -t "                   # Print only tuples (remove header/footer)
+  | PSQL_OPTS="${PSQL_OPTS} -A "                   # un(A)ligned output
+  | PSQL_OPTS="${PSQL_OPTS} -X "                   # ignore .psqlrc
+  | PSQL_OPTS="${PSQL_OPTS} -v ON_ERROR_STOP=1 "
+  | PSQL_OPTS="${PSQL_OPTS} -P pager=off "
+  | PSQL_OPTS="${PSQL_OPTS} --single-transaction " # Opinionated.
+  | PSQL_OPTS="${PSQL_OPTS} --username=postgres "  # It will overwrite PGUSER injected env.var.
+  | PSQL_OPTS="${PSQL_OPTS} --dbname=myDatabase "  #
+  | PSQL_OPTS="${PSQL_OPTS} -h localhost "         # host to connect to.
+  | PSQL_OPTS="${PSQL_OPTS} -p 5432 "              # Port to connect to.
+  | #-----------------------------------------------
+  | (                                      <┐
+  |   cat << __EOF                          │
+  |     SET search_path = schema01;         │  script bash
+  |     SELECT TO_TIMESTAMP(secTSRegistry)  │  Any STDOUT(put) from ( ... )
+  |     FROM   schema01.table01             ├─ will be injected as STDIN(put)
+  |     WHERE TO_TIMESTAMP(secTSRegistry)   │  to psql.
+  |           > NOW() - INTERVAL '10 DAY'   │
+  | __EOF                                   │
+  | ) | \                                  <┘
+  |   docker run ${D_RUN_OPTS} \
+  |     postgres:14.5 \                    <- Use oficial image with given 14.5 version
+  |     psql ${PSQL_OPTS} \
+  |     'COPY FROM STDIN'                  <- Take SQL INPUT from STDIN
+  ```
+[[}]]
 
-# Understanding PSQL performance ----------------------------------------------
-@[https://www.craigkerstiens.com/2012/10/01/understanding-postgres-performance/]
+# Speed up queries 100x times using UNION [[{101,performance.101,01_PM.TODO.101,01_PM.TODO}]]
+* <https://www.foxhound.systems/blog/sql-performance-with-union/>
 
-* Generally you want your database to have a cache hit rate of
-  about 99%. You can find your cache hit rate with:
+* One of the most common cases where SQL query performance can degrade
+  significantly is in a diamond shaped schema, where there are multiple
+  ways of joining two tables together. In such a schema, a query is
+  likely to use OR to join tables in more than one way, which
+  eliminates the optimizer’s ability to create an efficient query
+  plan. This scenario is best illustrated through an example.
 
-  SELECT
-    sum(heap_blks_read) as heap_read,
-    sum(heap_blks_hit)  as heap_hit,
-    sum(heap_blks_hit) / (sum(heap_blks_hit) + sum(heap_blks_read)) as ratio
-  FROM
-    pg_statio_user_tables;
+  ```
+  |                                 stores
+  |                                 +---------+------+
+  |      customers            +----→| id      | int  |←----------------+
+  |      +----------+------+  |     | address | text |                 |
+  | +---→| id       | int  |  |     +---------+------+                 |
+  | |    | name     | text |  |                                        |
+  | |    | store_id | int  +--+                   employees            |
+  | |    +----------+------+                      +----------+------+  |
+  | |                                      +-----→| id       | int  |  |
+  | |                                      |      | name     | text |  |
+  | |  customer_orders                     |      | role     | text |  |
+  | |  +-------------+-----------+         |      | store_id | int  +--+
+  | |  | id          | int       |←--+     |      +----------+------+
+  | +--+ customer_id | int       |   |     |
+  |    | created     | timestamp |   |     |
+  |    +-------------+-----------+   |     |  employee_markouts
+  |                                  |     |  +--------------+-----------+
+  |                                  |     |  | id           | int       |
+  |     customer_order_items         |     +--+ employee_id  | int       |
+  |     +-------------------+-----+  |        | meal_item_id | int       +--+
+  |     | id                | int |  |        | created      | timestamp |  |
+  |     | customer_order_id | int +--+        +--------------+-----------+  |
+  |  +--+ meal_item_id      | int |                                         |
+  |  |  +-------------------+-----+                                         |
+  |  |                                 meal_items                           |
+  |  |                                 +-------+------+                     |
+  |  +--------------------------------→| id    | int  |←--------------------+
+  |                                    | label | text |
+  |                                    | price | int  |
+  |                                    +-------+------+
+  ```
+
+# Understanding PSQL performance
+* <https://www.craigkerstiens.com/2012/10/01/understanding-postgres-performance/>
+
+* Generally you want your database to have a cache hit rate of about 99%.
+  You can find your cache hit rate with:
+
+  ```
+  | SELECT
+  |   sum(heap_blks_read) as heap_read,
+  |   sum(heap_blks_hit)  as heap_hit,
+  |   sum(heap_blks_hit) / (sum(heap_blks_hit) + sum(heap_blks_read)) as ratio
+  | FROM
+  |   pg_statio_user_tables;
+  ```
 
   If you find yourself with a ratio significantly lower than 99% then
   you likely want to consider increasing the cache available to your
   database.
-
 * The other primary piece for improving performance is indexes.
    To generate a list of your tables in your database with the largest
   ones first and the percentage of time which they use an index you can
   run:
-
+  ```
   SELECT
     relname,
     100 * idx_scan / (seq_scan + idx_scan) percent_of_times_index_used,
@@ -925,94 +831,91 @@ plan. This scenario is best illustrated through an example.
       seq_scan + idx_scan > 0
   ORDER BY
     n_live_tup DESC;
-
+  ```
      While there is no perfect answer, if you’re not somewhere around
   99% on any table over 10,000 rows you may want to consider adding an
   index.
-
 * Index Cache Hit Rate
   Finally to combine the two if you’re interested in how many of
   your indexes are within your cache you can run:
-
+  ```
   SELECT
     sum(idx_blks_read) as idx_read,
     sum(idx_blks_hit)  as idx_hit,
     (sum(idx_blks_hit) - sum(idx_blks_read)) / sum(idx_blks_hit) as ratio
   FROM
     pg_statio_user_indexes;
-
+  ```
   Generally, you should also expect this to be in the 99% similar to
   your regular cache hit rate.
-
-# Reindex [[{performance.troubleshooting]] ----------------------------------------
-https://www.enterprisedb.com/edb-docs/d/postgresql/reference/manual/13.1/sql-reindex.html
-
-[[}]]
 
 [[{02_DOC_HAS.comparative,data.analytics]]
 # PSQL vs MSQL comparative for data analytics
 @[https://www.pg-versus-ms.com/]
-PSQL: PostgreSQL's CSV support is very good with RFC4180 support
-     (which is the closest thing there is to an official CSV standard)
-      COPY TO
-      COPY FROM
-      Helpul error message in case of error with fail-fast approach:
-      - Abort import on problem
-      (vs silently corrupt, misunderstand or alter data)
+* PSQL: PostgreSQL's CSV support is very good with RFC4180 support
+  (which is the closest thing there is to an official CSV standard)
+  ```
+  COPY TO
+  COPY FROM
+  ```
+* Helpul error message in case of error with fail-fast approach:
+  * Abort import on problem
+  (vs silently corrupt, misunderstand or alter data)
 
-PostgreSQL                     | MS SQL Server:
-DROP TABLE IF EXISTS my_table; |
-                               | IF OBJECT_ID (N'dbo.my_table', N'U') IS NOT NULL
-                               | DROP TABLE dbo.my_table;
-
-- PSQL supports DROP SCHEMA CASCADE:
- *  This is very, very important for a robust analytics delivery methodology,*
- *where tear-down-and-rebuild is the underlying principle of repeatable,     *
- *auditable, collaborative analytics work.                                   *
-  - drop  schema and all the database objects inside it.
-
-PostgreSQL                  |  MS SQL Server
-CREATE TABLE good_films AS  |  SELECT
-SELECT                      |    *
-  *                         |  INTO
-FROM                        |    good_films
-  all_films                 |  FROM
-WHERE                       |    all_films
-  imdb_rating >= 8;         |  WHERE
-
-  - In PostgreSQL, you can execute as many SQL statements as you like in one
+* ```
+  | PostgreSQL                     | MS SQL Server:
+  | DROP TABLE IF EXISTS my_table; |
+  |                                | IF OBJECT_ID (N'dbo.my_table', N'U') IS NOT NULL
+  |                                | DROP TABLE dbo.my_table;
+  ```
+* PSQL supports DROP SCHEMA CASCADE:
+  * This is very, very important for a robust analytics delivery methodology,
+    where tear-down-and-rebuild is the underlying principle of repeatable,
+    auditable, collaborative analytics work.
+  * drop  schema and all the database objects inside it.
+* ```
+  | PostgreSQL                  |  MS SQL Server
+  | CREATE TABLE good_films AS  |  SELECT
+  | SELECT                      |    *
+  |   *                         |  INTO
+  | FROM                        |    good_films
+  |   all_films                 |  FROM
+  | WHERE                       |    all_films
+  |   imdb_rating >= 8;         |  WHERE
+  ```
+* In PostgreSQL, you can execute as many SQL statements as you like in one
   batch; as long as you've ended each statement with a semicolon, you can
   execute whatever combination of statements you like. For executing
   automated batch processes or repeatable data builds or output tasks, this
   is critically important functionality.
-  - PostgreSQL supports the RETURNING clause, allowing UPDATE, INSERT and
+* PostgreSQL supports the RETURNING clause, allowing UPDATE, INSERT and
   DELETE statements to return values from affected rows. This is elegant and
   useful. MS SQL Server has the OUTPUT clause, which requires a separate
   table variable definition to function. This is clunky and inconvenient and
   forces a programmer to create and maintain unnecessary boilerplate code.
-  - PostgreSQL supports $$ string quoting, like so:
-SELECT $$Hello, World$$ AS greeting;
+* PostgreSQL supports $$ string quoting, like so:
+  ```SELECT $$Hello, World$$ AS greeting;```
     This is extremely useful for generating dynamic SQL because (a) it allows
   the user to avoid tedious and unreliable manual quoting and escaping when
   literal strings are nested and (b) since text editors and IDEs tend not to
   recogniise $$ as a string delimiter, syntax highlighting remains functional
   even in dynamic SQL code.
-  - PostgreSQL lets you use procedural languages simply by submitting code to
+* PostgreSQL lets you use procedural languages simply by submitting code to
   the database engine; you write procedural code in Python or Perl or R or
   JavaScript or any of the other supported languages (see below) right next
   to your SQL, in the same script. This is convenient, quick, maintainable,
   easy to review, easy to reuse and so on.
-  - "Pure" declarative SQL is good at what it was designed for – relational
+* "Pure" declarative SQL is good at what it was designed for – relational
   data manipulation and querying. You quickly reach its limits if you try to
   use it for more involved analytical processes, such as complex interest
   calculations, time series analysis and general algorithm design. SQL
   database providers know this, so almost all SQL databases implement some
   kind of procedural language. This allows a database user to write imperative
-  - style code for more complex or fiddly tasks.
-  - PostgreSQL's procedural language support is exceptional:
-    - PL/PGSQL: this is PostgreSQL's native procedural language. It's like Oracle's
+  * style code for more complex or fiddly tasks.
+  * PostgreSQL's procedural language support is exceptional:
+    * PL/PGSQL: this is PostgreSQL's native procedural language. It's like Oracle's
         PL/SQL, but more modern and feature-complete.
-    - PL/V8: the V8 JavaScript engine from Google Chrome is available in PostgreSQL.
+    * PL/V8: the V8 JavaScript engine from Google Chrome is available in PostgreSQL.
       Even better, PL/V8 supports global (i.e. cross-function call) state,
       allowing the user to selectively cache data in RAM for fast random access.
       Suppose you need to use 100,000 rows of data from table A on each of 1,000,000
@@ -1020,58 +923,63 @@ SELECT $$Hello, World$$ AS greeting;
       these tables (resulting in a 100bn row intermediate table, which will
       kill any but the most immense server) or do something akin to a scalar
       subquery (or, worse, cursor-based nested loops), resulting in crippling
-      I/O load if the query planner doesn't read your intentions properly.
-     * In PL/V8 you simply cache table A in memory and run a function on each        *
-     *of the rows of table B – in effect giving you RAM-quality access (             *
-     *negligible latency and random access penalty; no non-volatile I/O load)        *
-     *to the 100k-row table. I did this on a real piece of work recently – my        *
-     *PostgreSQL/PLV8 code was about 80 times faster than the MS T-SQL solution      *
-     *and the code was much smaller and more maintainable. Because it took about     *
-     *23 seconds instead of half an hour to run, I was able to run 20 run-test-modify*
-     *cycles in an hour, resulting in feature-complete, properly tested, bug-free    *
-     *code.                                                                          *
+      I/O load if the query planner doesn't read your intentions properly.<br/>
+       In PL/V8 you simply cache table A in memory and run a function on each         
+      of the rows of table B – in effect giving you RAM-quality access (              
+      negligible latency and random access penalty; no non-volatile I/O load)         
+      to the 100k-row table. I did this on a real piece of work recently – my         
+      PostgreSQL/PLV8 code was about 80 times faster than the MS T-SQL solution       
+      and the code was much smaller and more maintainable. Because it took about      
+      23 seconds instead of half an hour to run, I was able to run 20 run-test-modify 
+      cycles in an hour, resulting in feature-complete, properly tested, bug-free     
+      code.<br/>
       (All those run-test-modify cycles were only possible because of DROP SCHEMA CASCADE
        and freedom to execute CREATE FUNCTION statements in the middle of a statement
        batch, as explained above. See how nicely it all fits together?)
-    - PL/Python: Fancy running a SVM from scikit-learn or some
+    * PL/Python: Fancy running a SVM from scikit-learn or some
       arbitrary-precision arithmetic provided by gmpy2 in the middle of a SQL query?
       No problem!
-    - PL/R
-    - C: doesn't quite belong in this list because you have to compile it
+    * PL/R
+    * C: doesn't quite belong in this list because you have to compile it
       separately, but it's worth a mention.  In PostgreSQL it is trivially easy
       to create functions which execute compiled, optimised C (or C++ or assembler)
       in the database backend.
-  - In PostgreSQL, custom aggregates are convenient and simple to use,
-     resulting in fast problem-solving and maintainable code:
-CREATE FUNCTION interest_sfunc(state JSON, movement FLOAT, rate FLOAT, dt DATE) RETURNS JSON AS
-$$
-state.balance += movement;  //payments into/withdrawals from account
-if (0 === dt.getUTCDate()) //compound interest on 1st of every month
-{
-  state.balance += state.accrual;
-  state.accrual = 0;
-}
-state.accrual += state.balance * rate;
-return state;
-$$ LANGUAGE plv8;
-
-CREATE AGGREGATE interest(FLOAT, FLOAT, DATE)
-(
-  SFUNC=interest_sfunc,
-  STYPE=JSON,
-  INITCOND='{"balance": 0, "accrual": 0}'
-);
-
---assume accounts table has customer ID, date, interest rate and account movement for each day
-CREATE TABLE cust_balances AS
-SELECT
-  cust_id,
-  (interest(movement, rate, dt ORDER BY dt)->>'balance')::FLOAT AS balance
-FROM
-  accounts
-GROUP BY
-  cust_id;
-Elegant, eh? A custom aggregate is specified in terms of an internal state
+* In PostgreSQL, custom aggregates are convenient and simple to use,
+  resulting in fast problem-solving and maintainable code:
+  ```
+  | CREATE FUNCTION interest_sfunc(state JSON, movement FLOAT, rate FLOAT, dt DATE) RETURNS JSON AS
+  | $$
+  | state.balance += movement;  //payments into/withdrawals from account
+  | if (0 === dt.getUTCDate()) //compound interest on 1st of every month
+  | {
+  |   state.balance += state.accrual;
+  |   state.accrual = 0;
+  | }
+  | state.accrual += state.balance * rate;
+  | return state;
+  | $$ LANGUAGE plv8;
+  | 
+  | CREATE AGGREGATE interest(FLOAT, FLOAT, DATE)
+  | (
+  |   SFUNC=interest_sfunc,
+  |   STYPE=JSON,
+  |   INITCOND='{"balance": 0, "accrual": 0}'
+  | );
+  | {
+  |   state.balance += state.accrual;
+  | 
+  | --assume accounts table has customer ID, date, interest rate and account movement for each day
+  | CREATE TABLE cust_balances AS
+  | SELECT
+  |   cust_id,
+  |   (interest(movement, rate, dt ORDER BY dt)->>'balance')::FLOAT AS balance
+  | FROM
+  |   accounts
+  | GROUP BY
+  |   cust_id;
+  | {
+  ```
+  Elegant, eh? A custom aggregate is specified in terms of an internal state
   and a way to modify that state when we push new values into the aggregate
   function. In this case we start each customer off with zero balance and no
   interest accrued, and on each day we accrue interest appropriately and
@@ -1087,415 +995,157 @@ Elegant, eh? A custom aggregate is specified in terms of an internal state
   written in an appropriate language for implementing complex logic. (Tragic
   side-note: I have seen large organisations spend tens of thousands of
   pounds over weeks of work trying to achieve the same thing using poorer tools.)
-- Date/Time
-    - PostgreSQL: you get DATE, TIME, TIMESTAMP and TIMESTAMP WITH TIME ZONE,
+* Date/Time
+  * PostgreSQL: you get DATE, TIME, TIMESTAMP and TIMESTAMP WITH TIME ZONE,
   all of which do exactly what you would expect. They also have fantastic
   range and precision, supporting microsecond resolution from the 5th
   millennium BC to almost 300 millennia in the future. They accept input in a
   wide variety of formats and the last one has full support for time zones
-    - They can be converted to and from Unix time, which is very important
-      for interoperability with other systems.
-    - They also support the INTERVAL type, which is so useful it has its own
-      section right after this one.
-      SELECT to_char('2001-02-03'::DATE, 'FMDay DD Mon YYYY');  ← "Saturday 03 Feb 2001"
-
-      SELECT to_timestamp('Saturday 03 Feb 2001', 'FMDay DD Mon YYYY');  ←TS 2001-02-03 00:00:00+00
-
-      SELECT NOW() - INTERVAL '1 DAY';
-
-      SELECT
-          'yesterday'::TIMESTAMP,
-          'tomorrow'::TIMESTAMP,
-          'allballs'::TIME AS aka_midnight;
-
-    - PostgreSQL: the INTERVAL type represents a period of time, such as "30
-  microseconds" or "50 years". It can also be negative, which may seem
-  counterintuitive until you remember that the word "ago" exists. PostgreSQL
-  also knows about "ago", in fact, and will accept strings like '1 day ago'
-  as interval values (this will be internally represented as an interval of -
-  1 days). Interval values let you do intuitive date arithmetic and store
-  time durations as first-class data values. They work exactly as you expect
-  and can be freely casted and converted to and from anything which makes sense
-  - PostgreSQL arrays are supported as a first-class data type
-    - eaning fields in tables, variables in PL/PGSQL, parameters to functions
-      and so on can be arrays. Arrays can contain any data type you like,
-      including other arrays. This is very, very useful. Here are some of the
-      things you can do with arrays:
-
-    - Store the results of function calls with arbitrarily-many return values, such as regex matches
-    - Represent a string as integer word IDs, for use in fast text matching algorithms
-    - Aggregation of multiple data values across groups, for efficient cross-tabulation
-    - Perform row operations using multiple data values without the expense of a join
-    - Accurately and semantically represent array data from other applications in your tool stack
-    - Feed array data to other applications in your tool stack
-  - PostgreSQL: full support for JSON, including a large set of utility functions for
-     transforming between JSON types and tables (in both directions)
-  - PostgreSQL: HSTORE is a PostgreSQL extension which implements a fast key-value store as a data type.
-     Like arrays, this is very useful because virtually every high-level programming language has such
-     a concept (associative arrays, dicts, std::map ...)
-     There are also some fun unexpected uses of such a data type. A colleague
-     recently asked me if there was a good way to deduplicate a text array. Here's
-     what I came up with:
-        SELECT akeys(hstore(my_array, my_array)) FROM my_table;
-     i.e. put the array into both the keys and values of an HSTORE, forcing a
-     dedupe to take place (since key values are unique) then retrieve the keys
-     from the HSTORE. There's that PostgreSQL versatility again.
-
-  - PostgreSQL:<a href="https://www.postgresql.org/docs/9.3/static/rangetypes.html]]range types</a>.
-    Every database programmer has seen fields called start_date and end_date,
-    and most of them have had to implement logic to detect overlaps. Some have even found, the hard way,
-    that joins to ranges using BETWEEN can go horribly wrong, for a number of reasons.
-    PostgreSQL's approach is to treat time ranges as first-class data types. Not only can you put a
-    range of time (or INTs or NUMERICs or whatever) into a single data value, you can use a host of
-    built-in operators to manipulate and query ranges safely and quickly. You
-    can even apply specially-developed indices to them to massively accelerate
-    queries that use these operators.
-  - PostgreSQL: NUMERIC (and DECIMAL - they're symonyms) is near-as-dammit arbitrary
-    precision: it supports 131,072 digits before the decimal point and 16,383 digits after the decimal point.
-  - PostgreSQL: XML/Xpath querying is supported
-  - PostgreSQL's logs, by default, are all in one place. By changing a couple of settings in a text file,
-    you can get it to log to CSV (and since we're talking about PostgreSQL, it's proper CSV, not broken CSV).
-    You can easily set the logging level anywhere from "don't bother logging
-    anything" to "full profiling and debugging output".
-    The documentation even contains DDL for a table into which the CSV-format
-    logs can be conveniently imported.
-    You can also log to stderr or the system log or to the Windows event log
-    (provided you're running PostgreSQL in Windows, of course).
-      The logs themselves are human-readable and machine-readable and contain data
-    likely to be of great value to a sysadmin.
-      Who logged in and out, at what times, and from where? Which queries are being
-    run and by whom?
-      How long are they taking? How many queries are submitted in each batch?
-    Because the data is well-formatted CSV,
-      it is trivially easy to visualise or analyse it in R or PostgreSQL itself or
-    Python's matplotlib or whatever you like.
-  - PostgreSQL comes with a set of extensions called contrib modules. There are libraries of functions,
-    types and utilities for doing certain useful things which don't quite fall
-    into the core feature set of the server. There are libraries for fuzzy
-    string matching, fast integer array handling, external database connectivity,
-    cryptography, UUID generation, tree data types and loads, loads more. A few
-    of the modules don't even do anything except provide templates to allow
-    developers and advanced users to develop their own extensions and custom functionality.
-[[}]]
-
-[[{data.analytics,01_PM.TODO]]
-# PostgreSQL for Analytics Apps
-@[https://www.infoq.com/vendorcontent/show.action?vcr=4727]
-https://aws.amazon.com/rds/postgresql/
-https://aws.amazon.com/rds/redshift/
-[[}]]
-
-[[{data.analytics,01_PM.TODO]]
-# Intelligent Analytics with PostgreSQL
-TODO: (Video) InfoQ: Developing an Intelligent Analytics App with PostgreSQL
-
-@[https://www.infoq.com/vendorcontent/show.action?vcr=4675]
-
-- Azure Database for PostgreSQL brings together the community edition
-  database engine and capabilities of a fully managed service - so you
-  can focus on your apps instead of having to manage a database.
-[[}]]
-
-</div>
-
-<div group>
-    ● Non classified<br/>
-[[{low_code,security,API,integration.graphql,qa,01_PM.TODO]]]
-# PostGraphile
-@[https://www.graphile.org/postgraphile/]
-@[https://www.youtube.com/watch?v=eDZO8z1qw3k]
-
-  PSQL   ←····  PostGraphile ····→ GraphQL
-  Server           Server          API Server
-                   (NodeJS)        auto-generated
-                                   from Schema
-
-- Support for JWT and PSQL ROLE-bases/Row-level access control.
-- Generates optimized SQL from GraphQL queries.
-  generating 1 query when REST will ussally generate "N+1"
-- Auto-discovered relations e.g. userByAuthorId
-- Export also Custom procedures and views as GraphQL.
-- Automatic CRUD mutations e.g. updatePost
-- Custom mutation procedures enabling complex changes to be exposed simply
-- Real-time features powered by LISTEN/NOTIFY and/or logical decoding + WebSockets.
-
-- Performace: (C&P FROM https://www.graphile.org/postgraphile/performance/):
-  On (Digital Ocean) compute-optimised, 4 vCPU, 8GB of RAM, running dockerized
-  versions of (P.Graphile,PSQL, benchmarking soft) result output was:
-
-  query tracks_media_first_20 {                  ←  SIPLE QUERY:
-    allTracksList(first: 20) { trackId name }      *3250 req/second*
-  }
-
-  query albums_tracks_genre_some {               ←  3-LEVEL QUERY
-    allAlbumsList(condition: { artistId: 127 }) {  *1450 req/second*
-      artistId title
-      tracksByAlbumIdList {
-        trackId name
-        genreByGenreId { name }
-      }
-    }
-  }
-
-  query prisma_deeplyNested {                       "heavy" query
-    allAlbumsList(condition: { artistId: 127 }) {  *550 req/second         *
-    · albumId title                                *maintaining sub-50ms   *
-    · tracksByAlbumIdList {                        *95th percentile latency*
-    ·   trackId name
-    ·   genreByGenreId { name }                     ← 3level
-    · }
-    · artistByArtistId {                            ← Union
-    ·   albumsByArtistIdList {
-    ·     tracksByAlbumIdList {
-    ·       mediaTypeByMediaTypeId { name }         ← 5 level
-    ·       genreByGenreId { name }                 ← 5 level
-    ·     }
-    ·   }
-    · }
-    }
-  }
+  * They can be converted to and from Unix time, which is very important
+    for interoperability with other systems.
+  * They also support the INTERVAL type, which is so useful it has its own
+    section right after this one.
+    ```
+    | SELECT to_char('2001-02-03'::DATE, 'FMDay DD Mon YYYY');  ← "Saturday 03 Feb 2001"
+    | 
+    | SELECT to_timestamp('Saturday 03 Feb 2001', 'FMDay DD Mon YYYY');  ←TS 2001-02-03 00:00:00+00
+    | 
+    | SELECT NOW() - INTERVAL '1 DAY';
+    | 
+    | SELECT
+    |     'yesterday'::TIMESTAMP,
+    |     'tomorrow'::TIMESTAMP,
+    |     'allballs'::TIME AS aka_midnight;
+    ```
+  * PostgreSQL: the INTERVAL type represents a period of time, such as "30
+    microseconds" or "50 years". It can also be negative, which may seem
+    counterintuitive until you remember that the word "ago" exists. PostgreSQL
+    also knows about "ago", in fact, and will accept strings like '1 day ago'
+    as interval values (this will be internally represented as an interval of -
+    1 days). Interval values let you do intuitive date arithmetic and store
+    time durations as first-class data values. They work exactly as you expect
+    and can be freely casted and converted to and from anything which makes sense
+* PostgreSQL arrays are supported as a first-class data type
+  * eaning fields in tables, variables in PL/PGSQL, parameters to functions
+    and so on can be arrays. Arrays can contain any data type you like,
+    including other arrays. This is very, very useful. Here are some of the
+    things you can do with arrays:
+  * Store the results of function calls with arbitrarily-many return values, such as regex matches
+  * Represent a string as integer word IDs, for use in fast text matching algorithms
+  * Aggregation of multiple data values across groups, for efficient cross-tabulation
+  * Perform row operations using multiple data values without the expense of a join
+  * Accurately and semantically represent array data from other applications in your tool stack
+  * Feed array data to other applications in your tool stack
+* PostgreSQL: full support for JSON, including a large set of utility functions for
+   transforming between JSON types and tables (in both directions)
+* PostgreSQL: HSTORE is a PostgreSQL extension which implements a fast key-value store as a data type.
+   Like arrays, this is very useful because virtually every high-level programming language has such
+   a concept (associative arrays, dicts, std::map ...)
+   There are also some fun unexpected uses of such a data type. A colleague
+   recently asked me if there was a good way to deduplicate a text array. Here's
+   ```
+   |  SELECT akeys(hstore(my_array, my_array)) FROM my_table;
+   ```
+   i.e. put the array into both the keys and values of an HSTORE, forcing a
+   dedupe to take place (since key values are unique) then retrieve the keys
+   from the HSTORE. There's that PostgreSQL versatility again.
+* PostgreSQL: [range types](https://www.postgresql.org/docs/9.3/static/rangetypes.html)
+  Every database programmer has seen fields called start_date and end_date,
+  and most of them have had to implement logic to detect overlaps. Some have even found, the hard way,
+  that joins to ranges using BETWEEN can go horribly wrong, for a number of reasons.
+  PostgreSQL's approach is to treat time ranges as first-class data types. Not only can you put a
+  range of time (or INTs or NUMERICs or whatever) into a single data value, you can use a host of
+  built-in operators to manipulate and query ranges safely and quickly. You
+  can even apply specially-developed indices to them to massively accelerate
+  queries that use these operators.
+* PostgreSQL: NUMERIC (and DECIMAL - they're symonyms) is near-as-dammit arbitrary
+  precision: it supports 131,072 digits before the decimal point and 16,383 digits after the decimal point.
+* PostgreSQL: XML/Xpath querying is supported
+* PostgreSQL's logs, by default, are all in one place. By changing a couple of settings in a text file,
+  you can get it to log to CSV (and since we're talking about PostgreSQL, it's proper CSV, not broken CSV).
+  You can easily set the logging level anywhere from "don't bother logging
+  anything" to "full profiling and debugging output".
+  The documentation even contains DDL for a table into which the CSV-format
+  logs can be conveniently imported.
+  You can also log to stderr or the system log or to the Windows event log
+  (provided you're running PostgreSQL in Windows, of course).
+    The logs themselves are human-readable and machine-readable and contain data
+  likely to be of great value to a sysadmin.
+    Who logged in and out, at what times, and from where? Which queries are being
+  run and by whom?
+    How long are they taking? How many queries are submitted in each batch?
+  Because the data is well-formatted CSV,
+    it is trivially easy to visualise or analyse it in R or PostgreSQL itself or
+  Python's matplotlib or whatever you like.
+* PostgreSQL comes with a set of extensions called contrib modules. There are libraries of functions,
+  types and utilities for doing certain useful things which don't quite fall
+  into the core feature set of the server. There are libraries for fuzzy
+  string matching, fast integer array handling, external database connectivity,
+  cryptography, UUID generation, tree data types and loads, loads more. A few
+  of the modules don't even do anything except provide templates to allow
+  developers and advanced users to develop their own extensions and custom functionality.
 
 
-- PRE-REQUESITES: NodeJS.
-- Install (NodeJS based)
-$*$ npm install db-migrate    *  ← Optional. Schema control.
-$*$ npm install db-migrate-pg *  ← PostgreSQL plugin for db-migrate.
-$*"vim" database.json         *  ← db migrate configuration.
-  {
-   "dev" : {
-    "driver": "pg",
-    "host": "...",
-    "database": "...",
-    }
-  }
-$*$ npx db-migrate create \    * ← Create next files in migrations/sql/:
-$*  create-schema --sql-file   *   %Y%m%d%H%M%S-create-schema-up.sql
-                                   %Y%m%d%H%M%S-create-schema-down.sql
-                                   %Y%m%d%H%M%S-create-schema.js
+[[{01_PM.resource,data.analytics,02_DOC_HAS.comparative,01_PM.qa]]
+# PostgreSQL vs MSQL doc. comparative
+@[https://www.linkedin.com/pulse/postgresql-vs-ms-sql-server-girish-chander/]
 
-  $ vim ...sql                   ← Init SQL migration up/down
+- MS SQL Server's documentation is all ... unfriendly, sprawling mess,  [humor]
+  conservative, humourless, "business appropriate" – i.e. officious,
+  boring and dry.
+  Not only does it lack amusing references to the historical role of Catholicism
+  in the development of date arithmetic, it is impenetrably stuffy and
+  hidden behind layers of unnecessary categorisation and ostentatiously
+  capitalised official terms. Try this: go to the product documentation
+  page for MS SQL Server 2012 and try to get from there to something
+  useful. Or try reading this gem (not cherry-picked, I promise):
 
-  ...-create-schema-up.sql        ...-create-schema-down.sql
-  CREATE SCHEMA learn;            DROP SCHEMA learn;
+- A  report part definition is an XML fragment of a report definition
+  file. You create report parts by creating a report definition, and
+  then selecting report items in the report to publish separately as
+  report parts.
 
-$*$ npx db-migrate up          * ← Apply migration (or 'down' to "remove")
-
-$*$ npx db-migrate create \    * ← creates migrations/sql/
-$*    create-table-person      *
-
-   ...-create-table-person-up.sql  ...-create-table-person-down.sql
-   CREATE TABLE learn.person (     DROP TABLE learn.person;
-   ...
-   );
-   COMMENT ON TABLE learn.person
-     IS 'Lorem Ipsum ....'
-   COMMENT ON COLUMN learn.person.id
-     IS 'Prim. unique id...'
-   COMMENT ON COLUMN ...
-     IS '@omit create,update ↩         ← 1st Smart-tags on comments used to add
-   Lorem Ipsum ...'                      info consumed by postgraphile. In this
-                                         case it tells Posgraphile to avoid users
-                                         being able to create/update column through
-                                         generated GraphQL API.
-
-$*$ npm install postgraphile \  * ← Install PostGraphile Server !!!
-$*  @graphile-contrib/pg-simplify-inflector * ← Short generated names in API
-$*                              *
-
-$*$ vim launch_pggraphile.sh    * ← Launcher script with
-  | npx postgraphile    \           http://...5000/graphql GraphQL API
-  | -c postgres:// ...  \           http://...5000/graphiql Dev/test UI
-  | --schema learn      \         ← Sync only with this schema (sort of
-  |                                 visibility namespace inside PSQL)
-  | --schema learn      \         ← Sync only with this schema (sort of
-  | --append-plugins    \
-  | @graphile-contrib/pg-simplify-inflector
-  | --watch             \         ← Autorefresh GraphQL API on schema changes
-  |                     \           (avoiding graphile server restart)
-  | --enhance-graphiql  \         ← Shows all GraphQL queries and mutations in UI
-  | --allow-explain     \         ← Show PSQL explain in Dev. (web) UI
-  | --dynamic-json
-
-     e.g.GraphQL query       e.g. RETURNED RESULT
-
-     query PeopleQuery {     {
-       allPeople {           · "data": {
-         nodes {             ·   "people": {
-           id                ·   · "nodes" : [
-           firstName         ·   ·   { "id": 1, "...", ...},
-           lastName          ·   ·   { "id": 2, "...", ...},
-         }                   ·   ·   ...
-       }                     ·   · ]
-     }                       ·   }
-                             · }
-                             }
-     (PeopleQuery, allPeople,
-      id, firstName, lastName
-      types autogenerated by
-      pg-graphile
+- Has the word "report" started to lose its meaning yet?
 [[}]]
 
 
-[[{low_code,security,API,integration.graphql,qa,01_PM.TODO]]
-# graphjin
-@[https://graphjin.com/]
-@[https://github.com/dosco/graphjin]
-* Similar to PostGraphile but written in Go.
-* Fast query/update with simple GraphQL, including deeply nested queries and mutations.
-* Realtime subscriptions to queries to get all related updates over websockets
-* Database schema discovery. Works with Postgres and (distributed) Yugabyte DB.
-* Out of the box support for infinite scroll, threaded comments, activity feed and
-  other common app patterns
-* Full-text search support for search and auto-complete.
-* Authentication support: JWT,Firebase, Rails cookie, others, ..
-* Automatic Persisted Queries to improve network performance.
-* growing community.
-
-[[}]]
-
-[[{tool,qa,01_PM.TODO]]
-# Liquibase
-@[http://www.liquibase.org/]
-Source control for the DDBB schema.
-- Eliminate errors and delays when releasing databases.
-- Deploys and Rollback changes for specific versions without needing
-  to know what has already been deployed.
-- Deploy database and application changes together so they always
-  stay in sync.
-- Supports code branching and merging
-- Supports multiple developers
-- Supports multiple database types
-- Supports XML, YAML, JSON and SQL formats
-- Supports context-dependent logic
-- Cluster-safe database upgrades
-- Generate Database change documentation
-- Generate Database "diffs"
-- Run through your build process, embedded in your application or on demand
-- Automatically generate SQL scripts for DBA code review
-- Does not require a live database connection
-
-Java Maven Plugin:
-@[https://docs.liquibase.com/tools-integrations/maven/home.html]
-[[}]]
-
-[[{architecture.cloud]]
-# AWS Serverless PostgreSQL
-@[https://aws.amazon.com/blogs/aws/amazon-aurora-postgresql-serverless-now-generally-available/]
-
-- "serverless" relational database service (RDS) in AWS Aurora.
-- Automatically starts, scales, and shuts down database capacity
-- per-second billing for applications with less predictable usage patterns.
-
-- It's a *different implementation of the standard versions of these open-source databases.
-
-From the RDS console:
-- select the Amazon Aurora database engine PostgreSQL
-- set new DB cluster identifier, specification of credentials,
-- set capacity:
-  - minimum and maximum capacity units for their database, in terms of Aurora Capacity Units (ACUs)
-    – a combination of processing and memory capacity. Besides defining the ACUs, users can also
-      determine when compute power should stop after a certain amount of idle time.
-
-*how capacity settings will work once the database is available*
-- client apps transparently connect to a proxy fleet
-  that routes the workload to a pool of resources that
-  are automatically scaled.
-- Scaling is very fast because resources are "warm" and
-  ready to be added to serve your requests.
-
-- Minimum storage: 10GB, will automatically grow up to 64 TB
- (based on the database usage) in 10GB increments
- *with no impact to database performance*
-
-*pricing models*
-- On-Demand Instance Pricing: pay by hour, no long-term commitments
-- Reserved  Instance Pricing: steady-state database workloads
-
-*Cost*
-@[https://aws.amazon.com/rds/aurora/pricing/]
-
-[[}]]
-
-[[{dev_lang.java,performance.troubleshooting]]
-# Reactive java Client
-@[https://github.com/vietj/reactive-pg-client]
-@[https://github.com/eclipse-vertx/vertx-sql-client/tree/3.8/vertx-pg-client]
-
-High performance reactive PostgreSQL client written in Java
-(By Julien Viet, core developer of VertX and Java Crash shell)
-[[}]]
-
-# Patroni [[{architecture.HA]]
-  https://github.com/zalando/patroni
-  Patroni: A Template for PostgreSQL HA with ZooKeeper, etcd or Consul
-
-  You can find a version of this documentation that is searchable and also easier
-  to navigate at patroni.readthedocs.io.
-
-  There are many ways to run high availability with PostgreSQL; for a list, see
-  the PostgreSQL Documentation.
-
-  Patroni is a template for you to create your own customized, high-availability
-  solution using Python and - for maximum accessibility - a distributed
-  configuration store like ZooKeeper, etcd, Consul or Kubernetes. Database
-  engineers, DBAs, DevOps engineers, and SREs who are looking to quickly deploy
-  HA PostgreSQL in the datacenter-or anywhere else-will hopefully find it useful.
-
-  We call Patroni a "template" because it is far from being a one-size-fits-all
-  or plug-and-play replication system. It will have its own caveats. Use wisely.
-
-  Note to Kubernetes users: Patroni can run natively on top of Kubernetes. Take a
-  look at the Kubernetes chapter of the Patroni documentation.
 [[}]]
 
 [[{data.analytics,01_PM.TODO]]
 # Regex support
-- fundamental in analytics work involving text processing tasks.
+* fundamental in analytics work involving text processing tasks.
   """  A data analytics tool without regex support is like a bicycle without a
       saddle – you can still use it, but it's painful. """
-
-- Great support in PostgreSQL
-R*WARN:* Non-portable to other DDBBs.
-
-- Exs:
-
-  > SELECT * FROM my_table
-       WHERE my_field ~ E'^([0-9])\\1+[aeiou]';   ← Get all lines starting with a repeated digit
-                                                    followed by a vowel
-
-  > SELECT SUBSTRING(my_field FROM E'\\y[A-Fa-f0-9]+\\y') ← Get first isolated hex-string
-    FROM my_table;                                          occurring in a field:
-
-
-  > SELECT REGEXP_SPLIT_TO_TABLE('The quick brown fox', E'\\s+'); ← split string based on regex
-                                                                    return each fragment in a row
-    │ column │
-    ├────────┤
-    │ The    │
-    │ quick  │
-    │ brown  │
-    │ fox    │
-
-  > SELECT
-      REGEXP_MATCHES(my_string, E'\\y[a-z]{10,}\\y', 'gi')   ← 'gi' flags:
-    FROM my_table;                └──────┬───────┘              g: All matches (vs just first match)
-                                         │                      i: Case insensitive
-                                         └───────────────────── word with 10+ letters
-                                  └─────────┬───────────┘
-                                            └────────────────── find all words (case─insensitive) in my_string
-                                                                with at least 10 letters:
-[[}]]
-
-[[{data.analytics,architecture.real_time,architecture.scalability,01_PM.TODO]]
-# Citus Sharding Extension
-@[https://github.com/citusdata/citus]
-@[https://www.citusdata.com]
-
-Distributed PostgreSQL extension for multi-tenant and
-real-time analytics workloads
-
-- cluster of databases with Citus extension (sharding for PostgreSQL).
-  Configured High-Availability for the coordinator node.
+* Great support in PostgreSQL
+  WARN: Non-portable to other DDBBs.
+* Exs:
+  ```
+  | > SELECT * FROM my_table
+  |      WHERE my_field ~ E'^([0-9])\\1+[aeiou]';   ← Get all lines starting with a repeated digit
+  |                                                   followed by a vowel
+  |
+  | > SELECT SUBSTRING(my_field FROM E'\\y[A-Fa-f0-9]+\\y') ← Get first isolated hex-string
+  |   FROM my_table;                                          occurring in a field:
+  |
+  |
+  | > SELECT REGEXP_SPLIT_TO_TABLE('The quick brown fox', E'\\s+'); ← split string based on regex
+  |                                                                   return each fragment in a row
+  |   │ column │
+  |   ├────────┤
+  |   │ The    │
+  |   │ quick  │
+  |   │ brown  │
+  |   │ fox    │
+  |
+  | > SELECT
+  |     REGEXP_MATCHES(my_string, E'\\y[a-z]{10,}\\y', 'gi')   ← 'gi' flags:
+  |   FROM my_table;                └──────┬───────┘              g: All matches (vs just first match)
+  |                                        │                      i: Case insensitive
+  |                                        └───────────────────── word with 10+ letters
+  |                                 └─────────┬───────────┘
+  |                                           └────────────────── find all words (case─insensitive) in my_string
+  |                                                               with at least 10 letters:
+  ```
 [[}]]
 
 [[{data.analytics,01_PM.TODO]]
@@ -1556,50 +1206,26 @@ real-time analytics workloads
       and they switched to an extension called TimescaleDB.
 
 <!-- @ma -->
-@[https://blog.timescale.com/when-boring-is-awesome-building-a-scalable-time-series-database-on-postgresql-2900ea453ee2]
-    - TimescaleDB uses an abstraction called a Hypertable
-    @[https://docs.timescale.com/v1.0/introduction/architecture]
-      to hide partitioning across multiple dimensions like time and space.
-      Each hypertable is split into "chunks", and each chunk corresponds
-      to a specific time interval. Chunks are sized so that all of the B-tree
-      structures for a table's indices can reside in memory during inserts,
-      similar to how PostgreSQL does partitioning.
-      Indices are auto-created on time and the partitioning key.
-      Queries can be run against arbitrary dimmensions
-      @[https://news.ycombinator.com/item?id=14041467] (just like TS ddbb alternatives)
-      - One  differences between TimescaleDB and other partitioning tools like
-      pg_partman is support for auto-sizing of partitions.
-      - TimescaleDB has reported higher performance benchmarks compared to
-      PostgreSQL 10 partitioning based solutions and InfluxDB
-      (@[https://blog.timescale.com/time-series-data-postgresql-10-vs-timescaledb-816ee808bac5]
-       @[https://blog.timescale.com/timescaledb-vs-influxdb-for-time-series-data-timescale-influx-sql-nosql-36489299877])
-      - there have been concerns about maintainability
-       @[https://news.ycombinator.com/item?id=14041870]
-        Clustered deployments of TimescaleDB still under development at the time of writing.
-
-
-[[}]]
-
-[[{01_PM.resource,data.analytics,02_DOC_HAS.comparative,01_PM.qa]]
-# PostgreSQL vs MSQL doc. comparative
-@[https://www.linkedin.com/pulse/postgresql-vs-ms-sql-server-girish-chander/]
-
-- MS SQL Server's documentation is all ... unfriendly, sprawling mess,  [humor]
-  conservative, humourless, "business appropriate" – i.e. officious,
-  boring and dry.
-  Not only does it lack amusing references to the historical role of Catholicism
-  in the development of date arithmetic, it is impenetrably stuffy and
-  hidden behind layers of unnecessary categorisation and ostentatiously
-  capitalised official terms. Try this: go to the product documentation
-  page for MS SQL Server 2012 and try to get from there to something
-  useful. Or try reading this gem (not cherry-picked, I promise):
-
-- A  report part definition is an XML fragment of a report definition
-  file. You create report parts by creating a report definition, and
-  then selecting report items in the report to publish separately as
-  report parts.
-
-- Has the word "report" started to lose its meaning yet?
+* @[https://blog.timescale.com/when-boring-is-awesome-building-a-scalable-time-series-database-on-postgresql-2900ea453ee2]
+* TimescaleDB uses an abstraction called a Hypertable
+  <https://docs.timescale.com/v1.0/introduction/architecture>
+  to hide partitioning across multiple dimensions like time and space.
+  Each hypertable is split into "chunks", and each chunk corresponds
+  to a specific time interval. Chunks are sized so that all of the B-tree
+  structures for a table's indices can reside in memory during inserts,
+  similar to how PostgreSQL does partitioning.
+  Indices are auto-created on time and the partitioning key.
+  Queries can be run against arbitrary dimmensions
+  <https://news.ycombinator.com/item?id=14041467> (just like TS ddbb alternatives)
+* One  differences between TimescaleDB and other partitioning tools like
+  pg_partman is support for auto-sizing of partitions.
+* TimescaleDB has reported higher performance benchmarks compared to
+  PostgreSQL 10 partitioning based solutions and InfluxDB
+  (<https://blog.timescale.com/time-series-data-postgresql-10-vs-timescaledb-816ee808bac5>,
+  <https://blog.timescale.com/timescaledb-vs-influxdb-for-time-series-data-timescale-influx-sql-nosql-36489299877>)
+* there have been concerns about maintainability
+ @[https://news.ycombinator.com/item?id=14041870]
+  Clustered deployments of TimescaleDB still under development at the time of writing.
 [[}]]
 
 [[{security.autiding,security.monitoring,01_PM.TODO]]
@@ -1620,835 +1246,248 @@ real-time analytics workloads
   the monitoring of even SUPERUSER actions.
 [[}]]
 
-[[{01_PM.TODO]]
-# Percona "TODO"s
-https://www.percona.com/blog/2018/09/28/high-availability-for-enterprise-grade-postgresql-environments/
-______________________________
-https://www.percona.com/blog/2018/10/02/scaling-postgresql-using-connection-poolers-and-load-balancers-for-an-enterprise-grade-environment/
-___________________________
-https://www.percona.com/blog/2018/10/08/detailed-logging-for-enterprise-grade-postresql/
-___________________________
-
-https://www.percona.com/doc/percona-xtrabackup/2.4/release-notes/2.4/2.4.17.html
-___________________________
-https://www.percona.com/blog/2019/07/22/percona-monitoring-and-management-pmm-2-beta-4-is-now-available/
-___________________________
-Configure HAProxy with PostgreSQL Using Built-in pgsql-check
-https://www.percona.com/blog/2019/11/08/configure-haproxy-with-postgresql-using-built-in-pgsql-check/
-___________________________
-(What's new, breaking changes)
-https://www.percona.com/blog/2020/07/28/migrating-to-postgresql-version-13-incompatibilities-you-should-be-aware-of/
-[[}]]
-
-
-# Crunchy low-code deployments [[{01_PM.low_code,01_PM.TODO.101}]]
-@[https://crunchydata.github.io/crunchy-containers/]
-The Crunchy Container Suite provides Docker containers that enable
-rapid deployment of PostgreSQL, including administration and
-monitoring tools. Multiple styles of deploying PostgreSQL clusters
-are supported.
-
 [[{architecture.gis,01_PM.TODO]]
-- Tools to create graphs in PostGIS:
+# Tools to create graphs in PostGIS:
 
-  - osm2pgrouting: (Preinstaled with PostGIS). Creates graphs from OSM cartography.
-    Only OpenStreetMap supported (2018).
+* osm2pgrouting: (Preinstaled with PostGIS). Creates graphs from OSM cartography.
+  Only OpenStreetMap supported (2018).
+* pgr_nodeNetwork: (Beta) creates a graphs from table's data.
+* Combining PostGIS functions:
+  * St_Union() : Allows for "dissolve" operation, joining N geometries in one MULTI
+                (MULTILINESTRING,...)
+  * St_Dump () : Allows to fetch all geometries in a MULTI one. in a data-composed type
+                 formed by 'path' attribute (alphanumeric), and  'geom' attribute (geometry).
+* Ex.:
+  ```
+  | CREATE TABLE  street_guide ( id SERIAL PRIMARY KEY, name VARCHAR(25), geom GEOMETRY );
+  |
+  | INSERT INTO street_guide (name, geom)
+  |   VALUES (‘A’, St_GeomFromText( ‘LINESTRING(
+  |                -3.6967738 40.4227273, -3.6966589 40.4231664,
+  |                -3.6965874 40.4234147, -3.6965117 40.4236891,
+  |                -3.6965125 40.4237212)’
+  |           ) );
+  |
+  | INSERT INTO street_guide (name, geom)
+  |   VALUES (‘B’, St_GeomFromText( ‘LINESTRING(
+  |                -3.6955342 40.4236784, -3.6955697 40.4231059,
+  |                -3.6956075 40.4225342)’
+  |           ));
+  | ...
+  |
+  | CREATE TABLE *street_guide_graph* AS
+  |   SELECT (ST_DUMP(St_Union(geom))).geom   ← Use ST_DUMP(ST_UNION(...)) to create graph ¹
+  |   FROM street_guide
+  |
+  | ¹ to group ALL geometries we must ignore any other attributes in ST_UNION (aggregate function)
+  |   or grouping will fail.
+  |   To recover other attributes in each arc and espacial relationship of type ST_CONTAINS() among
+  |   streets and arcs must be established.
+  |
+  | ALTER TABLE street_guide_graph ADD COLUMN source INTEGER;
+  | ALTER TABLE street_guide_graph ADD COLUMN target INTEGER;
+  |
+  |  SELECT pgr_createTopology
+  |         (‘street_guide_graph’, 0.00001, ‘geom’,’id’); ← - Create street_guide_graph_vertices_pgr  table
+  |                                                          - updates 'source', 'target' in street_guide_graph.
+  ```
 
-  - pgr_nodeNetwork: (Beta) creates a graphs from table's data.
-
-  - Combining PostGIS functions:
-    - St_Union() : Allows for "dissolve" operation, joining N geometries in one MULTI
-                  (MULTILINESTRING,...)
-    - St_Dump () : Allows to fetch all geometries in a MULTI one. in a data-composed type
-                   formed by 'path' attribute (alphanumeric), and  'geom' attribute (geometry).
-
-   Ex.:
-   CREATE TABLE  street_guide ( id SERIAL PRIMARY KEY, name VARCHAR(25), geom GEOMETRY );
-
-   INSERT INTO street_guide (name, geom)
-     VALUES (‘A’, St_GeomFromText( ‘LINESTRING(
-                  -3.6967738 40.4227273, -3.6966589 40.4231664,
-                  -3.6965874 40.4234147, -3.6965117 40.4236891,
-                  -3.6965125 40.4237212)’
-             ) );
-
-   INSERT INTO street_guide (name, geom)
-     VALUES (‘B’, St_GeomFromText( ‘LINESTRING(
-                  -3.6955342 40.4236784, -3.6955697 40.4231059,
-                  -3.6956075 40.4225342)’
-             ));
-   ...
-
-   CREATE TABLE *street_guide_graph* AS
-     SELECT (ST_DUMP(St_Union(geom))).geom   ← Use ST_DUMP(ST_UNION(...)) to create graph **1*
-     FROM street_guide
-
-   **1* to group ALL geometries we must ignore any other attributes in ST_UNION (aggregate function)
-        or grouping will fail.
-        To recover other attributes in each arc and espacial relationship of type ST_CONTAINS() among
-        streets and arcs must be established.
-
-   ALTER TABLE street_guide_graph ADD COLUMN source INTEGER;
-   ALTER TABLE street_guide_graph ADD COLUMN target INTEGER;
-
-
-    SELECT pgr_createTopology
-           (‘street_guide_graph’, 0.00001, ‘geom’,’id’); ← - Create street_guide_graph_vertices_pgr  table
-                                                            - updates 'source', 'target' in street_guide_graph.
-
-# PostGIS extension on Mng DBs
-@[https://www.scaleway.com/en/docs/using-the-postgis-extension-on-managed-databases/]
+## PostGIS extension on Mng DBs
+* <https://www.scaleway.com/en/docs/using-the-postgis-extension-on-managed-databases/>
 [[}]]
 
 
-# Expanding PostgreSQL with Extensions
-- Extension Mechanism: <!-- @ma -->
-@[https://www.postgresql.org/docs/current/static/contrib.html]
-@[https://www.percona.com/blog/2018/10/05/postgresql-extensions-for-an-enterprise-grade-system/]
+[[{ PM.TODO.now ]]
 
-  => SELECT * FROM pg_available_extensions;     ← check extensions enabled in current ddbb
- *Ex. Install postgis extension:*
-  $ sudo add-apt-repository ppa:ubuntugis/ppa    ← STEP 1:
-  $ sudo apt-get update
-  $ sudo apt-get install postgis
+# Expanding PostgreSQL with Extensions 
 
-  => CREATE EXTENSION postgis;                   ← STEP 2:
-  => CREATE EXTENSION postgis_topology;
 
-- mysql_fdw , postgres_fdw : allow PostgreSQL databases to talk to remote
-  homogeneous/heterogeneous databases like PostgreSQL and MySQL, MongoDB, etc.
+* <https://www.postgresql.org/docs/current/static/contrib.html>
+* <https://www.percona.com/blog/2018/10/05/postgresql-extensions-for-an-enterprise-grade-system/>
 
-- pg_stat_statements: allows for tracking execution statistics of all
-  SQL statements executed by a server. gathered statistics are made
-  available via a view "pg_stat_statements".
+  ```
+  | => SELECT * FROM pg_available_extensions;     ← check extensions enabled in current ddbb
+  |*Ex. Install postgis extension:*
+  | $ sudo add-apt-repository ppa:ubuntugis/ppa    ← STEP 1:
+  | $ sudo apt-get update
+  | $ sudo apt-get install postgis
+  |
+  | => CREATE EXTENSION postgis;                   ← STEP 2:
+  | => CREATE EXTENSION postgis_topology;
+  ```
+[[PM.TODO.now }]]
 
-- pg_repack: Address table fragmentation problems [[{architecture.scalability,performance.troubleshooting}]]
-
-- pgaudit: caters with major compliance requirement for many security standards.
-       providing detailed session and/or object audit logging via the standard PostgreSQL
-       logging facility.
-
-- PostGIS: "arguably the most versatile implementation of the specifications
-           of the Open Geospatial Consortium."
-
-- HypoPG: extension for adding support for hypothetical indexes
-  that is, without actually adding the index. This helps us to answer questions
-  such as “how will the execution plan change if there is an index on column X?”.
-
-- tds_fdw: Another important FDW (foreign data wrapper) extension
-  Both Microsoft SQL Server and Sybase uses TDS (Tabular Data Stream) format.
-
-- orafce: there are lot of migrations underway from Oracle to PostgreSQL.
-  Incompatible functions in PostgreSQL are often painful
-   The “orafce” project implements some of the functions from the Oracle database.
-  The functionality was verified on Oracle 10g and the module is useful for
-   production work.
-
-- pg_bulkload: Is loading a large volume of data into database in a very efficient
-  and faster way a challenge for you?
-
-- wal2json: PostgreSQL has feature related to logical replication built-in.
-  Extra information is recorded in WALs which will facilitate logical decoding.
-  wal2json is a popular output plugin for logical decoding.
-  This can be utilized for different purposes including change data capture.
-
-# supported isolation levels: [[{01_PM.TODO.101]]
-
-  - READ COMMITTED
-  - REPEATABLE READ (i.e., SI)
-  - SERIALIZABLE (i.e., SI with detection and mitigation of anomalies)
-
-    A snapshot comprises of a set of transaction IDs, which were committed as of
-  the start of this transaction, whose effects are visible. Each row has two
-  additional elements in the header, namely xmin and xmax , which are the IDs
-  of the transactions that created and deleted the row, respectively. Note,
-  every update to a row is a delete followed by an insert (both in the table
-  and index). Deleted rows are flagged by setting xmax instead of being
-  actually deleted. In other words, PostgreSQL maintains all versions of a row
-  unlike other implementations such as Oracle that update rows in-place and
-  keep a rollback log. This is ideal for our goal of building a blockchain that
-  maintains all versions of data. For each row, a snapshot checks xmin and xmax
-  to see which of these transactions’ ID are included in the snapshot to
-  determine row visibility
-[[}]]
 
 [[{architecture,01_PM.TODO]]
 # Architecture  [[{devops.monitoring}]]
-  systemctl status output:
-  /system.slice/postgresql.service CGroup
-    ├─7117 /usr/bin/postgres -D /var/lib/pgsql/data -p 5432
-    ├─7118 postgres: logger process
-    ├─7120 postgres: checkpointer process
-    ├─7121 postgres: writer process
-    ├─7122 postgres: wal writer process
-    ├─7123 postgres: autovacuum launcher process
-    └─7124 postgres: stats collector process
-
-  $ ps hf -u postgresq -o cmd
-  /usr/pgsql-9.4/bin/postgres -D /var/lib/pgsql/9.4/data
-  \_ postgres: logger       process
-  \_ postgres: checkpointer process
-  \_ postgres: writer       process
-  \_ postgres: wal writer   process
-  \_ postgres: autovacuum launcher  process
-  \_ postgres: stats collector  process
-  \_ postgres: postgres pgbench [local] idle in transaction
-  \_ postgres: postgres pgbench [local] idle
-  \_ postgres: postgres pgbench [local] UPDATE
-  \_ postgres: postgres pgbench [local] UPDATE waiting
-  \_ postgres: postgres pgbench [local] UPDATE
+  ```
+  | systemctl status output:
+  | /system.slice/postgresql.service CGroup
+  |   ├─7117 /usr/bin/postgres -D /var/lib/pgsql/data -p 5432
+  |   ├─7118 postgres: logger process
+  |   ├─7120 postgres: checkpointer process
+  |   ├─7121 postgres: writer process
+  |   ├─7122 postgres: wal writer process
+  |   ├─7123 postgres: autovacuum launcher process
+  |   └─7124 postgres: stats collector process
+  |
+  | $ ps hf -u postgresq -o cmd
+  | /usr/pgsql-9.4/bin/postgres -D /var/lib/pgsql/9.4/data
+  | \_ postgres: logger       process
+  | \_ postgres: checkpointer process
+  | \_ postgres: writer       process
+  | \_ postgres: wal writer   process
+  | \_ postgres: autovacuum launcher  process
+  | \_ postgres: stats collector  process
+  | \_ postgres: postgres pgbench [local] idle in transaction
+  | \_ postgres: postgres pgbench [local] idle
+  | \_ postgres: postgres pgbench [local] UPDATE
+  | \_ postgres: postgres pgbench [local] UPDATE waiting
+  | \_ postgres: postgres pgbench [local] UPDATE
+  ```
 
 # Deep Dive into psql Statistics [[{02_DOC_HAS.diagram}]]
-- The Internals of PostgreSQL!!!  @[http://www.interdb.jp/pg/index.html]
-
-
-   Extracted from @[https://dataegret.com/2015/11/deep-dive-into-postgresql-statistics/]
-       Client Backends              |                                                  |Postmaster
-      [pg_stat_activity]            |                                                  |[pg_stat_database]
-    -----------------------         |                                                  |----------------
-       Query Planning               |  Shared Buffers                                  |Background Workers
-                                    |  [pg_buffercache]                                |
-    -----------------------         |                                                  |------------------
-    Query Execution                 |                                                  |Autovacuum Launcher
-                                    |                                                  |
-    =======================         |                                                  |-------------------
-    Indexes IO  | Tables IO         |                                                  |Autovacuum Workers
-                |                   |                                                  |[pg_stat_activity]
-                |                   |                                                  |[pg_stat_user_tables]
-    -----------------------         |                                                  |
-        Buffers IO                  |                                                  |
-    [pg_stat_database]              |                                                  |
-    [pg_statio_all_indexes]         |                                                  |
-    [pg_statio_all_tables]          |                                                  |
-    =============================================================================================================
-             Write Ahead Log
-        [pg_current_xlog_location]
-        [pg_xlog_location_diff]
-    ============================================================================================================
-                                                      |
-    Logger Process                                    |                        Stats Collector
-                                                      |
-    ============================================================================================================
-    Logical               | WAL Sender           |Archiver           | Background         |  Checkpointer
-    Replication           |   Process            | Process           |  Writer            |   Process
-    [pr_replication_slots]| [pg_stat_replication]|[pg_stat_archiver] | [pg_stat_bgwriter] |  [pg_stat_database]
-                          |                      |                   |                    |  [pg_stat_bgwriter]
-    ============================================================================================================
-                                                     |
-                  NETWORK                            |               STORAGE
-                                                     |         [pg_stat_kcache]
-        (nicstat, iostat, ...)                       |         (iostat, ...)
-    ============================================================================================================
-         WAL Receiver Process     |                           |  Tables/Indexes Data Files
-                                  |                           |  [pg_index_size]     [pgstattupple]
-    ------------------------------|                           |  [pg_table_size]
-            Recovery Process      |                           |  [pg_database_size]
-     [pg_stat_database_conflicts] |                           |
-    ==============================+                           +=================================================
-[[}]]
-
-[[{02_doc_has.comparative,architecture.cache,01_PM.TODO]]
-# PSQL "vs" Redis/ElasticSearch/...
-@[https://www.infoq.com/articles/postgres-handles-more-than-you-think/]
-sponsored article (https://www.heroku.com/postgres)
-
- *caches*:
-  - PSQL beautifully designed caching system with pages, usage counts,
-    and transaction logs avoids disk access for repeated reads.
-
-  -*shared_buffer configuration parameter*in Postgres configuration file determines
-    how much memory it will use for caching data.
-   *Typically ~ 25% to 40% of  total memory*.
-    (PSQL also uses the OS cache). Change it like:
-
-   *ALTER SYSTEM SET shared_buffer TO = $value*
-
-  - Advanced caching tools include:
-    - pg_buffercache view: see what's occupying the shared buffer cache.
-
-    -*pg_prewarm*function (base install), enables DBAs to load table data into
-      either the OS cache or the PSQL buffer cache. (manual or automated).
-     *If you know the nature of your queries, it will greatly improve performance*.
-
-  REF: In-depth guide of PSQL Cache:
-  @[https://madusudanan.com/blog/understanding-postgres-caching-in-depth/]
-
- *Text searching*
-  -*tsvector data-type* plus a set of functions (to_tsvector, to_tsquery, to search, ..)
-   *tsvector represents a document optimized for text search by sorting terms and *
-   *normalizing variants.* Ex:
-
-    SELECT to_tsquery('english', 'The & Boys & Girls');
-
-      to_tsquery
-    ───────────────
-     'boy' & 'girl'
-
-  - results can be sorted by relevance depending on how often and which fields your query
-    appeared in the results. For example, making title more relevant than body,...
-    (Check official PSQL doc)
-
- *Data preprocessing with functions*
-  - Try pre-process as much data as possible with server-side functions.
-    cutting down latency from passing too much data back and forth between apps and ddbbs.
-    - particularly useful for large aggregations and joins.
-
-      CREATE FUNCTION                      ← Ex. PL/Python checking string lengths:
-        longer_string_length
-         (string1 string, string2 string)
-        RETURNS integer
-      AS $$
-        a=len(string1)
-        b-len(string2)
-        if a > b:
-          return a
-        return b
-      $$ LANGUAGE plpythonu;
-
-
- *Key-Value Data Type*
-  -*hstore extension* allows store/search simple key-value pairs.
-    tutorial:
-   @[https://www.ibm.com/cloud/blog/an-introduction-to-postgresqls-hstore]
-
- *Semi-structured Data Types*
-  -*JSON data-type*: support native JSON binary (JSONB).
-    JSONB significantly improves query performance.
-    As you can see below, it can :
-
-    SELECT '{"product1": ["blue""], "tags": {"price": 10}}'::json; ← convert JSON strings
-                                                                          to native JSON objects
-                          json
-    ──────────────────────────────────────────────
-     {"product1": ["blue"], "tags": {"price": 10}}
-
- *Tips for Scaling*
-  - Slow queries: See for missing important indexes.
-  - Don't over-index
-  - Use tools like EXPLAIN ANALYZE might surprise you by how often
-    the query planer actually chooses sequential table scans.
-    Since much of your table's row data is already cached, oftentimes
-    these elaborate indexes aren't even used.
-  - *Partial indexes save space*:
-    CREATE INDEX user_signup_date
-      ON users(signup_date)
-        WHERE is_signed_up;      ← We need to order, but only for users signed up
-
-
-  - Choose correct index type:
-
-    -*B-tree index*: used to*sort*data efficiently. (default one for INDEX).
-      - As you scale, inconsistencies can be a larger problem:
-        use 'amcheck' extension periodically.
-
-    -*BRIN indexes*: Block Range INdex (BRIN) can be used when*table is naturally*
-      *already sorted by a column where sort is needed*. Ex, log table written
-       sequentially:
-       - setting BRIN index on timestamp column lets the server know that the data
-         is already sorted.
-
-    -*Bloom filter index*: perfect for multi-column queries on big tables where*you*
-     *only need to test for 'sparse' equality against some query value*. Ex:
-
-      CREATE INDEX i ON t USING bloom(col1, col2, col3);
-      SELECT * from t WHERE col1 = 5 AND col2 = 9 AND col3 = ‘x’;
-
-    -*GIN and GiST indexes*: efficient indexes based on*composite values like text,*
-     *arrays, and JSON*.
-
- *Legitimate needs for another Data Store*
-  - Special data types not supported by PSQL:
-    linked list, bitmaps, and HyperLogLog functions in Redis.
-    Ex:  Frequency capping means displaying each web visitant (millions of them daily)
-         a given ad just once per day.
-         Redis HyperLogLog data type is perfect. It approximates set membership with
-         a very small error rate, in exchange for O(1) time and a very small memory
-         footprint.
-         PFADD adds an element to a HyperLogLog set. It returns 1 if your element is
-         not in the set already, and 0 if it is in the set.
-
-         PFADD user_ids uid1
-         (integer) 1
-         PFADD user_ids uid2
-         (integer) 1
-         PFADD user_ids uid1
-         (integer) 0
-
-  - Heavy real-time processing:
-    - many pub-sub events, jobs, and dozens of workers to coordinate.
-      Apache Kafka is preferred.
-
-  - Instant full-text searching:
-    real-time application under heavy load with*more than ten searches going on at a time*,
-    needed features like autocomplete, ... Elasticsearch can be a better option.
+* The Internals of PostgreSQL!!!  @[http://www.interdb.jp/pg/index.html]
+  Extracted from <https://dataegret.com/2015/11/deep-dive-into-postgresql-statistics/>
+  ```
+  |    Client Backends              |                                                  |Postmaster
+  |   [pg_stat_activity]            |                                                  |[pg_stat_database]
+  | -----------------------         |                                                  |----------------
+  |    Query Planning               |  Shared Buffers                                  |Background Workers
+  |                                 |  [pg_buffercache]                                |
+  | -----------------------         |                                                  |------------------
+  | Query Execution                 |                                                  |Autovacuum Launcher
+  |                                 |                                                  |
+  | =======================         |                                                  |-------------------
+  | Indexes IO  | Tables IO         |                                                  |Autovacuum Workers
+  |             |                   |                                                  |[pg_stat_activity]
+  |             |                   |                                                  |[pg_stat_user_tables]
+  | -----------------------         |                                                  |
+  |     Buffers IO                  |                                                  |
+  | [pg_stat_database]              |                                                  |
+  | [pg_statio_all_indexes]         |                                                  |
+  | [pg_statio_all_tables]          |                                                  |
+  | =============================================================================================================
+  |          Write Ahead Log
+  |     [pg_current_xlog_location]
+  |     [pg_xlog_location_diff]
+  | ============================================================================================================
+  |                                                   |
+  | Logger Process                                    |                        Stats Collector
+  |                                                   |
+  | ============================================================================================================
+  | Logical               | WAL Sender           |Archiver           | Background         |  Checkpointer
+  | Replication           |   Process            | Process           |  Writer            |   Process
+  | [pr_replication_slots]| [pg_stat_replication]|[pg_stat_archiver] | [pg_stat_bgwriter] |  [pg_stat_database]
+  |                       |                      |                   |                    |  [pg_stat_bgwriter]
+  | ============================================================================================================
+  |                                                  |
+  |               NETWORK                            |               STORAGE
+  |                                                  |         [pg_stat_kcache]
+  |     (nicstat, iostat, ...)                       |         (iostat, ...)
+  | ============================================================================================================
+  |      WAL Receiver Process     |                           |  Tables/Indexes Data Files
+  |                               |                           |  [pg_index_size]     [pgstattupple]
+  | ------------------------------|                           |  [pg_table_size]
+  |         Recovery Process      |                           |  [pg_database_size]
+  |  [pg_stat_database_conflicts] |                           |
+  | ==============================+                           +=================================================
+  ```
 [[}]]
 
 # Jailer "Jail" SQL subset data [[{qa.testing,qa.ux,data.analytics]]
 @[https://github.com/Wisser/Jailer]
 
-* Features:
-  * Exports consistent and referentially intact row-sets from
-    productive database and imports into dev/test environment.
-  * Improves database performance by removing and archiving obsolete   [[{performance,architecture.scalability]]
-    data without violating integrity.                                  [[}]]
-  * Generates topologically sorted SQL-DML, hierarchically structured
-    XML and DbUnit datasets.
-  * Data Browsing. Navigate bidirectionally through the database by
-    following foreign-key-based or user-defined relationships.
-  * SQL Console with code completion, syntax highlighting and
-    database metadata visualization.
+## Features
+* Exports consistent and referentially intact row-sets from
+  productive database and imports into dev/test environment.
+* Improves database performance by removing and archiving obsolete   [[{performance,architecture.scalability]]
+  data without violating integrity.                                  [[}]]
+* Generates topologically sorted SQL-DML, hierarchically structured
+  XML and DbUnit datasets.
+* Data Browsing. Navigate bidirectionally through the database by
+  following foreign-key-based or user-defined relationships.
+* SQL Console with code completion, syntax highlighting and
+  database metadata visualization.
 [[}]]
 
 [[{01_PM.TODO]]
 https://www.enterprisedb.com/blog/postgresql-wal-write-ahead-logging-management-strategy-tradeoffs
 
-# PostGIS (GEOSPATIAL DATA) Summary [[{data.analytics,architecture.graphs]]
-
-  C&P from https://en.wikipedia.org/wiki/PostGIS
-  PostGIS follows the Simple Features for SQL specification from the Open Geospatial Consortium (OGC).
-  https://medium.com/@tjukanov/why-should-you-care-about-postgis-a-gentle-introduction-to-spatial-databases-9eccd26bc42b [{{01_PM.TODO}]]
-
-  PRESETUP) Install PostGIS into current database
-
-  $ sudo add-apt-repository ppa:ubuntugis/ppa  # STEP 1) Install PostGIS extension in current OS/Database
-  $ sudo apt-get update
-  $ sudo apt-get install postgis
-
-  $ PGPASSWORD=... ; psql -u postgres          # STEP 2) Log in to Postgres instance
-
-  CREATE EXTENSION postgis;                    # STEP 3) install the extension
-  CREATE EXTENSION postgis_topology;
-
-## PostGIS @[http://postgis.net/], pg_sphere @[https://pgsphere.github.io/]
-  and q3c @[https://github.com/segasai/q3c]extension allowed ESDC to use
-  normal SQL to run location based queries and more specialized analyses.
-
-## QGIS (until 2013 known as Quantum GIS[2]): OOSS cross-platform desktop geographic information system (GIS)
-  application that supports viewing, editing, and analysis of geospatial data.[3]
-  QGIS supports shapefiles, coverages, personal geodatabases, dxf, MapInfo, *PostGIS*, and other formats.
-  Web services, including Web Map Service and Web Feature Service, are also supported to allow use of
-  data from external sources
-
-## Optimal Route calcs:
-  https://www.unigis.es/estructuras-de-grafo-para-el-enrutamiento-en-postgis/
-  *Tools to create graphs in PostGIS:*
-  └ osm2pgrouting: (Preinstaled with PostGIS). Creates graphs from OSM cartography.
-    Only OpenStreetMap supported (2018).
-  └ pgr_nodeNetwork: (Beta) creates a graphs from table's data.
-  └ Combining PostGIS functions:
-    - St_Union() : Allows for "dissolve" operation, joining N geometries in one MULTI
-                  (MULTILINESTRING,...)
-    - St_Dump () : Allows to fetch all geometries in a MULTI one. in a data-composed type
-                   formed by 'path' attribute (alphanumeric), and  'geom' attribute (geometry).
-
-   Ex.:
-   CREATE TABLE  street_guide ( id SERIAL PRIMARY KEY, name VARCHAR(25), geom GEOMETRY );
-
-   INSERT INTO street_guide (name, geom)
-     VALUES (‘A’, St_GeomFromText( ‘LINESTRING(
-                  -3.6967738 40.4227273, -3.6966589 40.4231664,
-                  -3.6965874 40.4234147, -3.6965117 40.4236891,
-                  -3.6965125 40.4237212)’
-             ) );
-
-   INSERT INTO street_guide (name, geom)
-     VALUES (‘B’, St_GeomFromText( ‘LINESTRING(
-                  -3.6955342 40.4236784, -3.6955697 40.4231059,
-                  -3.6956075 40.4225342)’
-             ));
-   ...
-
-   CREATE TABLE *street_guide_graph* AS
-     SELECT (ST_DUMP(St_Union(geom))).geom   ← Use ST_DUMP(ST_UNION(...)) to create graph *1)*
-     FROM street_guide
-
-   *1)* to group ALL geometries we must ignore any other attributes in ST_UNION (aggregate function)
-        or grouping will fail.
-        To recover other attributes in each arc and espacial relationship of type ST_CONTAINS() among
-        streets and arcs must be established.
-
-   ALTER TABLE street_guide_graph ADD COLUMN source INTEGER;
-   ALTER TABLE street_guide_graph ADD COLUMN target INTEGER;
-
-
-    SELECT pgr_createTopology
-           (‘street_guide_graph’, 0.00001, ‘geom’,’id’); ← - Create street_guide_graph_vertices_pgr  table
-                                                            - updates 'source', 'target' in street_guide_graph.
-[[}]]
-
-
-# PostgreSQL pgcrypto [[{security.crypto,01_PM.low_code]]
-@[https://www.postgresql.org/docs/8.3/pgcrypto.html]
-- Cryptographic functions for PostgreSQL. [[}]]
-
-# Upgrading the server [[{devops.101]]
-- @[https://www.postgresql.org/docs/10/static/upgrading.html"]
-  (pg_dumpall, pg_upgrade, replication)
-[[}]]
-
-# Error Reporting+Logging [[{]]
-@[https://www.postgresql.org/docs/current/static/runtime-config-logging.html]
-[[}]]
-
-# alibaba/PolarDB [[{scalability]]
-  https://github.com/alibaba/PolarDB-for-PostgreSQL
-  PolarDB PostgreSQL (hereafter simplified as PolarDB) is a cloud
-  native database service independently developed by Alibaba Cloud.
-  This service is 100% compatible with PostgreSQL and uses a shared
-  storage-based architecture in which computing is decoupled from
-  storage. This service features flexible scalability,
-  millisecond-level latency and hybrid transactional/analytical
-  processing (HTAP) capabilities.
-[[}]]
-
-# E-Maj 4.0.0 est sorti !  [[{]]
-  https://blog.dalibo.com/2021/06/25/e_maj.html
-- extension PL/pgSQL + client-web qui permet d’enregistrer les mises à jour
-  sur des ensembles de tables prédéfinies.
-- Cette version 4.0.0 apporte un gain de performance pour les opérations de
-  rollback E-Maj, en particulier sur des tables possédant FOREIGN KEYs.
-- Compatible avec PostgreSQL 14.
-
-[[}]]
-
-# pg Utils [[{performance.troubleshooting]]
-@[https://github.com/dataegret/pg-utils]
-Useful DBA tools by Data Egret
-- 83compat.sql
-- check_are_all_subscribed.sql
-- check_missing_grants.sql
-- check_strange_fk.sql
-- check_uniq_indexes.sql
-
-List all tables which do not have UNIQUE CONSTRAINTs.
-- check_config.sql: Report state of config.parameters in user/client sessions
-    (*) -> default value.
-    (c) -> changed
-    !!! -> changed in file, but not yet applied.
-
-- create_db_activity_view9.2.sql     : VIEW for non-idle queries running more then 100ms (optionally 500ms).
-- create_query_stat_cpu_time_view.sql: VIEW for queries running         >= 0.02 seconds (IO-time not accounted for).
-- create_query_stat_io_time_view.sql : VIEW for queries "IO-timing"     >= 0.02 seconds.
-- create_query_stat_time_view.sql    : VIEW for queries "run+IO-timing" >= 0.02 seconds (IO-time not accounted for).
-- create_query_stat_log.sql
-- create_slonik_set_full.sql
-- create slonik_set_incremental.sql
-- create_xlog_math_procedures.sql
-       - xlog_location_numeric : shows current WAL position in decimal expression.
-       - replay_lag_mb         : shows estimated lag between master and standby server in megabytes.
-       - all_replayed          : returns true if all WAL are replayed (zero lag).
-- db_activity.sql and db_activity9.2.sql
-- dirty_to_read_stat.sql             : statistics for "dirty" buffers. (Require pg_buffercache extensions)
-- generate_drop_items.sql
-- index_candidates_from_ssd.sql      : Display indexes which should be moved from/to SSD.       [[{scalability.indexing,performance.troubleshooting,storage.SSD]]
-  index_candidates_to_ssd.sql          Low d_w_rat value shows low disk reads with relatively
-                                       high amount of changes inside relation (this behaviour
-                                       influnces to the index permanent rebuilding, more changes
-                                       in table, more changes in index).
-- table_candidates_from_ssd.sql      : Show tables which should be moved from SSD (high writes,
-  table_candidates_to_ssd.sql          low reads) or to SSD (low writes, high reads).          [[}]]
-
-
-- index_disk_activity.sql            : Display indexes disk reads statistics.
-- indexes_with_null.sql              : Show indexes with NULL data                              [[{qa.billion_dolar_mistake}]]
-- low_used_indexes.sql               : Show indexes which low or not use.
-- master_wal_position.sql            : Shows current WAL state for master.
-- slave_wal_position.sql             : Shows current WAL state for slave.
-- query_stat_counts.sql              : Display query useful statistics: queries, number of calls, runtime, averages.
-- seq_scan_tables.sql                : Show tables with high amount of sequential scans.
-                                       Only following tables are shown:
-                                       with seq_scan > 0 AND
-                                       seq_tup_read > 100000
-- set_default_grants.sql             : Setup DEFAUlT PRIVILEGES for all new object created by postgres   [[{security.AAA]]
-                                       for role_ro and role_rw roles.
-     - role_ro: select on sequences; select on tables.
-     - role_rw: select,usage on sequences; select,insert,update,delete on tables.
-- set_missing_grants.sql             : Setup appropriate GRANTs for role_ro (SELECT) and role_rw
-                                       (SELECT,INSERT,UPDATE,DELETE,USAGE) on tables/views/sequences
-                                       in case when acl of these objects are null or not appropriate
-                                       by this snippet.                                                  [[}]]
-- slony_tables.sql                   : Show tables list from _slony.sl_table
-- sync_tablespaces.sql               : Find indexes stored in different tablespace than their tables
-                                       and move on indexes (ALTER INDEX indexname SET TABLESPACE tablespace)
-                                       into tablespace where the parent table is stored.
-- table_disk_activity.sql            :
-- table_index_write_activity.sql
-  table_write_activity.sql
-[[}]]
-
-# pgbench (Benchmarks)
-https://www.postgresql.org/docs/10/static/pgbench.html
-pgbench : Postgresql benchmark (Useful for tunning also)
-https://blog.pgaddict.com/posts/postgresql-performance-on-ext4-and-xfs
-
-# Events Notify/Listen                                              [[{architecture.streams]]
-  https://www.postgresql.org/docs/9.1/sql-notify.html
-  https://www.postgresql.org/docs/9.1/sql-listen.html
-  http://camel.apache.org/pgevent.html
-
-# Elixir Server (Better) alternative to standard PostgreSQL's notify:
-@[https://github.com/supabase/realtime]
-
-- Elixir server (Phoenix) allows to listen for ddbb changes  via websockets.
-- It works like this:
-  → listens ddbb replication functionality (using Postgres' logical decoding)
-    → convert byte-stream into JSON
-      → broadcasts over websockets.
-
-- Advantages over PostgreSQL's NOTIFY?
-  - No need to set up triggers on every table
-  - NOTIFY payload limit. 8000 bytes failing above it.
-    patchy fix: send an ID, then fetch record, consuming extra resources.
-  - Phoenix consumes one connection to the ddbb, even for many clients.
-- benefits
-  - listening to replication allows to make changes in the DDBB  from anywhere
-    (custom API, directly in DB, via console etc,...) - and changes will
-    still be available via websockets.
-  - Decoupling. Ex: send a new slack message every time someone makes
-    a new purchase.
-  - built with Phoenix, an extremely scalable Elixir framework.
-
-# Debezium ("Kafka integration")
-@[https://www.infoq.com/news/2019/04/change-data-capture-debezium]
-- Creating Events from Databases Using Change Data Capture:
-  Gunnar Morling at MicroXchg Berlin
-
-- Objective:
-  data → database → sync with : cache
-                                search engine.
-
-- Debezium solution:
-  - use change data capture (CDC) tool that captures and
-    publishes changes in a database.
-- Based on Apache Kafka to publish changes as event streams.
-  reads the TX logs (append-only) in a database and creates streams of events.
-  - Different ddbbs have their own APIs for reading the log files.
-    Debezium comes with connectors for several of them, producing
-    one generic and abstract event representation for Kafka.
-[[architecture.streams}]]
-
-# scheduled backups in k8s [[{devops.k8s,security.disaster_recovery]]
-  https://info.crunchydata.com/blog/schedule-postgresql-backups-and-retention-with-kubernetes
-  """ When I've given various talks on PostgreSQL and ask the question "do you take
-     regular backups of your production systems," I don't see as many hands raised
-     (and I'll also use this as an opportunity to say that having a replica is not
-      a backup).
-  However, if you are running PostgreSQL on Kubernetes *using the PostgreSQL Operator*,  [[01_PM.low_code]]
-  with a few commands, the answer to this question is "Yes!"
-[[}]]
-
-## Serializable Snapshot Isolation [[{01_PM.TODO.101]]
-@[https://drkp.net/papers/ssi-vldb12.pdf]
-PostgreSQL [8] is the first open source database to implement the
-abort during commit SSI variant [36] [[}]]
-
-## pgAdmin
-https://www.pgadmin.org/screenshots/#4
-
-## Hot Stand-By [[{security.disaster_recovery}]]
-https://linuxconfig.org/how-to-create-a-hot-standby-with-postgresql
-
-## sepgsql [[{security.selinux}]]
-@[https://www.postgresql.org/docs/current/static/sepgsql.html]
-- This module integrates with SELinux to provide an additional layer of
-  security checking above and beyond what is normally provided by
-  PostgreSQL. From the perspective of SELinux, this module allows
-  PostgreSQL to function as a user-space object manager. Each table or
-  function access initiated by a DML query will be checked against the
-  system security policy. This check is in addition to the usual SQL
-  permissions checking performed by PostgreSQL.
-
- *Limitations:*
-  PostgreSQL supports row-level access, but sepgsql does not.
-
-## PL pgSQL
-@[https://www.postgresql.org/docs/10/static/plpgsql.html]
-- pldebugger: ¡¡must-have!! extension for developers who work on stored functions
-  written in PL/pgSQL. This extension is well integrated with GUI tools like pgadmin,
-  which allows developers to step through their code and debug it.
-
-- plprofiler: profiler for pl. Specially useful during complex migrations from
-              proprietary databases,
-
-## pgx @[https://github.com/zombodb/pgx]
-- framework for developing PostgreSQL extensions in Rust and
-  strives to be as idiomatic and safe as possible.
-
-## Blockchain on Postgresql [[{architecture.blockchain}]]
-@[https://arxiv.org/pdf/1903.01919.pdf]
-"Hacking" and Morphing Postgresql into a blockchain
-
-## Yugabyte Real Time OLTP              [[{architecture.real_time.OLTP]]
-  https://github.com/YugaByte/yugabyte-dbo
-  https://blog.yugabyte.com/introducing-ysql-a-postgresql-compatible-distributed-sql-api-for-yugabyte-db/
-  high-performance, cloud-native distributed SQL database aiming to
-  support all PostgreSQL features.
-  It is best to fit for cloud-native OLTP (i.e. real-time, business-critical)
-  applications that need absolute data correctness and require at least
-  one of the following: scalability, high tolerance to failures,
-  globally-distributed deployments. [[}]]
-
-##  http://dalibo.github.io/pgbadger/
-  - @[https://www.dalibo.org/_media/pgconf.eu.2013.conferences-pgbadger_v.4.pdf]
-  - log analyzer with detailed reports from PSQL log files
-    (syslog, stderr or csvlog) with in-browser zoomable graph
-  - designed to parse huge log files as well as gzip compressed file
-
-## Explaining PG lantency/ies:
-https://www.cri.ensmp.fr/~coelho/cours/si/pg-latency-20170323-handout.pdf
-
-## https://linuxconfig.org/postgresql-performance-tuning-for-faster-query-execution
-
-## Global Index Advisor
-@[https://rjuju.github.io/postgresql/2020/01/06/pg_qualstats-2-global-index-advisor.html]
-pg qualstats 2: Global index advisor
-
-- Coming up with good index suggestion can be a complex task.
-  It requires knowledge of both apps queries and ddbb specificities.
--  pg_qualstats extension can provide pretty good index suggestion.
-  Pre-setup: - install and configure PoWA.
-- pg_qualstats version 2  removes the presetup.
-
-# PostgreSQL as Message Queue:  [[{architecute.message,architecture.decoupled]]
-  REF: https://stackoverflow.com/questions/13005410/why-do-we-need-message-brokers-like-rabbitmq-over-a-database-like-postgresql/13005551#13005551
-
-  PostgreSQL 9.5 incorporates SELECT ... FOR UPDATE ... SKIP LOCKED.
-  This makes implementing working queuing systems a lot simpler and
-  easier. You may no longer require an external queueing system since
-  it's now simple to fetch 'n' rows that no other session has locked,
-  and keep them locked until you commit confirmation that the work is
-  done. It even works with two-phase transactions for when external
-  co-ordination is required.
-
-  External queueing systems remain useful, providing canned
-  functionality, proven performance, integration with other systems,
-  options for horizontal scaling and federation, etc. Nonetheless, for
-  simple cases you don't really need them anymore.
-
-  Older versions
-  reliable concurrent queuing is really hard to do right in a RDBM
-  That's why tools like PGQ exist.
- -  You can get rid of polling in PostgreSQL by using LISTEN and NOTIFY,
-  but that won't solve the problem of reliably handing out entries off
-  the top of the queue to exactly one consumer while preserving highly
-  concurrent operation and not blocking inserts.
-
-  If you don't need highly concurrent multi-worker queue fetches then
-  using a single queue table in PostgreSQL is entirely reasonable.
-
-  https://wiki.postgresql.org/wiki/PGQ_Tutorial
-  What problems is PGQ a solution for?
-  - PGQ will solve asynchronous batch processing of live transactions.
-  - That means you're doing some INSERT/DELETE/UPDATE of rows from
-    your live environment, and you want to trigger some actions but
-    not at COMMIT time, later on. Not in a too distant future either,
-    just asynchronously: without blocking the live transaction.
-  - Every application of a certain size will need to postpone some
-    processing at a later date, and PGQ is a generic high-performance
-    solution built for PostgreSQL that allows implementing just that:
-    the batch processing. PGQ will care about the asynchronous
-    consuming of events, the error management, the queuing behaviour,
-    etc, and it comes with a plain SQL API to do this.    [[}]]
-
-[[}]]
-
-# See notes on coroot on @[../DevOps/coroot.txt]
-
-# "ORDER BY" improved our query timesy 100x
-  https://webapp.io/blog/postgres-query-speedups/ 
-* KeyPoints:
-  - queries can be sped up by creating right indices,
-    and making sure that they are used.
-
-Context:
-  table
-  ci_jobs  <·· inserts whenever a developer commits
-  -------      tracks CI pipeline status for that commit.
-               VITALLY IMPORTANT: status updates are pushed to XXX on time.
-
-  status_change_time timestamp \          <·· when status has been changed
-                     NOT NULL DEFAULT NOW(),
-  status_notify_time timestamp \          <·· when status has been notified to XXX
-                     NOT NULL DEFAULT to_timestamp(0));
-
-|listener| Component:  polls ci_job rows which have been changed,
-                       but for which XXX hasn't been recently told about
-
-UPDATE ci_jobs
-  SET status_notify_time = status_change_time
-  WHERE id IN (
-    SELECT ci_jobs.id FROM ci_jobs
-      WHERE ci_jobs.status_notify_time != ci_jobs.status_change_time
-        AND ci_jobs.status_notify_time < NOW()-'10 seconds'::interval LIMIT 10
-        FOR UPDATE SKIP LOCKED
-    )
-    RETURNING idAutomatic warnings for slow queries
-
-=> EXPLAIN ANALYZE
-    SELECT ci_jobs.id FROM ci_jobs
-      WHERE ci_jobs.status_notify_time != ci_jobs.status_change_time
-        AND ci_jobs.status_notify_time < NOW()-'10 seconds'::interval LIMIT 10
-        FOR UPDATE SKIP LOCKED;
-
-   Paste the result to explain.dalibo.com to see a GUI friendly output.
-   It was simple enough to create a SQL Index that would help PostgreSQL
-   find such rows faster:
-
-- First FIX Attemp:
-   CREATE INDEX to_be_updated_ci_jobs
-     ON ci_jobs(id, status_notify_time ASC)
-     WHERE (ci_jobs.status_notify_time != ci_jobs.status_change_time);
-     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-     An index can be created CONDITIONALLY for rows not matching a criteria [[keypoint]]
-     The index is basically an ordered set of the rows which have
-     different status_notify_time and status_change_time fields,
-     ordered by status_notify_time ascending.
-
-   FAIL: the index wasn't being used according to EXPLAIN ANALYZE.
-
-   FAILURE HYPOTHESIS: we are choosing 10 arbitrary rows (vs10 oldest)
-
-   By indicating that we want the 10 oldest rows the index is used!!!:
-    EXPLAIN ANALYZE
-       SELECT ci_jobs.id FROM ci_jobs
-         WHERE ci_jobs.status_notify_time != ci_jobs.status_change_time
-           AND ci_jobs.status_notify_time < NOW()-'10 seconds'::interval
-   +       ORDER BY ci_jobs.status_notify_time
-   +       LIMIT 10
-           FOR UPDATE SKIP LOCKED;
-   Execution time plummeted 2000ms ···> 24ms!!!!.
-
-   NOTE: the query estimator might better understand why this index is so
-        small (very few jobs are being changed, most are for commits long
-        passed) and we'll be able to drop the ORDER BY, but for now it's
-        required for a 100x speed up.
-
-
-# The Wonders of Postgres Logical Decoding Messages: [[{]]
-  https://www.infoq.com/articles/wonders-of-postgres-logical-decoding-messages/
-[[}]]
-
-# Colonnes liées par une relation d'inégalité - nouvelle solution
-  https://blog.dalibo.com/2023/02/02/colonnes_liees_par_une_relation_d_inegalite_nouvelle_solition.html 
-  Il nous faut donc un index fonctionnelde typeGiST, plus adapté aux
-  types complexes (intervalles, données géométriques, etc).
-
-  CREATE INDEX ON frequencies USING GIST (int4range(freqmin,freqmax,'[]') );
-  ANALYZE frequencies ;
-
-# A tour of Postgres Index Types
-  https://www.citusdata.com/blog/2017/10/17/tour-of-postgres-index-types/ 
-  GitHub users starred the Citus repo A tour of Postgres Index Types
-  Written by Craig Kerstiens
- October 17, 2017 At Citus we spend a lot of time working with customers on data modeling, optimizing queries, and adding indexes to make things snappy. My goal is to be as available for our customers as we need to be, in order to make you successful. Part of that is keeping your Citus cluster well tuned and performant which we take care of for you. Another part is helping you with everything you need to know about Postgres and Citus. After all a healthy and performant database means a fast performing app and who wouldn’t want that. Today we’re going to condense some of the information we’ve shared directly with customers about Postgres indexes. Postgres has a number of index types, and with each new release seems to come with another new index type. Each of these indexes can be useful, but which one to use depends on 1. the data type and then sometimes 2. the underlying data within the table, and 3. the types of lookups performed. In what follows we’ll look at a quick survey of the index types available to you in Postgres and when you should leverage each. Before we dig in, here’s a quick glimpse of the indexes we’ll walk you through: B-TreeGeneralized Inverted Index (GIN)Generalized Inverted Seach Tree (GiST)Space partitioned GiST (SP-GiST)Block Range Indexes (BRIN)Hash Now onto the indexing In Postgres, a B-Tree index is what you most commonly want If you have a degree in Computer Science, then a B-tree index was likely the first one you learned about. A B-tree index creates a tree that will keep itself balanced and even. When it goes to look something up based on that index it will traverse down the tree to find the key the tree is split on and then return you the data you’re looking for. Using an index is much faster than a sequential scan because it may only have to read a few pages as opposed to sequentially scanning thousands of them (when you’re returning only a few records). If you run a standard CREATE INDEX it creates a B-tree for you. B-tree indexes are valuable on the most common data types such as text, numbers, and timestamps. If you’re just getting started indexing your database and aren’t leveraging too many advanced Postgres features within your database, using standard B-Tree indexes is likely the path you want to take. GIN indexes, for columns with multiple values Generalized Inverted Indexes, commonly referred to as GIN, are most useful when you have data types that contain multiple values in a single column. From the Postgres docs: “GIN is designed for handling cases where the items to be indexed are composite values, and the queries to be handled by the index need to search for element values that appear within the composite items. For example, the items could be documents, and the queries could be searches for documents containing specific words.” The most common data types that fall into this bucket are: hStoreArraysRange typesJSONB One of the beautiful things about GIN indexes is that they are aware of the data within composite values. But because a GIN index has specific knowledge about the data structure support for each individual type needs to be added, as a result not all datatypes are supported. GiST indexes, for rows that overlap values GiST indexes are most useful when you have data that can in some way overlap with the value of that same column but from another row. The best thing about GiST indexes: if you have say a geometry data type and you want to see if two polygons contained some point. In one case a specific point may be contained within box, while another point only exists within one polygon. The most common datatypes where you want to leverage GiST indexes are: Geometry typesText when dealing with full-text search GiST indexes have some more fixed constraints around size, whereas GIN indexes can become quite large. As a result, GiST indexes are lossy. From the docs: “A GiST index is lossy, meaning that the index might produce false matches, and it is necessary to check the actual table row to eliminate such false matches. (PostgreSQL does this automatically when needed.)” This doesn’t mean you’ll get wrong results, it just means Postgres has to do a little extra work to filter those false positives before giving your data back to you. Special note: GIN and GiST indexes can often be beneficial on the same column types. One can often boast better performance but larger disk footprint in the case of GIN and vice versa for GiST. When it comes to GIN vs. GiST there isn’t a perfect one size fits all, but the broad rules above apply SP-GiST indexes, for larger data Space partitioned GiST indexes leverage space partitioning trees that came out of some research from Purdue. SP-GiST indexes are most useful when your data has a natural clustering element to it, and is also not an equally balanced tree. A great example of this is phone numbers (at least US ones). They follow a format of: 3 digits for area code3 digits for prefix (historically related to a phone carrier’s switch) 4 digits for line number This means that you have some natural clustering around the first set of 3 digits, around the second set of 3 digits, then numbers may fan out in a more even distribution. But, with phone numbers some area codes have a much higher saturation than others. The result may be that the tree is very unbalanced. Because of that natural clustering up front and the unequal distribution of data–data like phone numbers could make a good case for SP-GiST. BRIN indexes, for larger data Block range indexes can focus on some similar use cases to SP-GiST in that they’re best when there is some natural ordering to the data, and the data tends to be very large. Have a billion record table especially if it’s time series data? BRIN may be able to help. If you’re querying against a large set of data that is naturally grouped together such as data for several zip codes (which then roll up to some city) BRIN helps to ensure that similar zip codes are located near each other on disk. When you have very large datasets that are ordered such as dates or zip codes BRIN indexes allow you to skip or exclude a lot of the unnecessary data very quickly. BRIN additionally are maintained as smaller indexes relative to the overall datasize making them a big win for when you have a large dataset. Hash indexes, finally crash safe Hash indexes have been around for years within Postgres, but until Postgres 10 came with a giant warning that they were not WAL-logged. This meant if your server crashed and you failed over to a stand-by or recovered from archives using something like wal-g then you’d lose that index until you recreated it. With Postgres 10 they’re now WAL-logged so you can start to consider using them again, but the real question is should you? Hash indexes at times can provide faster lookups than B-Tree indexes, and can boast faster creation times as well. The big issue with them is they’re limited to only equality operators so you need to be looking for exact matches. This makes hash indexes far less flexible than the more commonly used B-Tree indexes and something you won’t want to consider as a drop-in replacement but rather a special case. Which do you use? We just covered a lot and if you’re a bit overwhelmed you’re not alone. If all you knew before was CREATE INDEX you’ve been using B-Tree indexes all along, and the good news is you’re still performing as well or better than most databases that aren’t Postgres :) As you start to use more Postgres features consider this a cheatsheet for when to use other Postgres types: B-Tree - For most datatypes and queriesGIN - For JSONB/hstore/arraysGiST - For full text search and geospatial datatypesSP-GiST - For larger datasets with natural but uneven clusteringBRIN - For really large datasets that line up sequentially Hash - For equality operations, and generally B-Tree still what you want here
-
-# PostgreSQL 15 Released!
-  https://www.postgresql.org/about/news/postgresql-15-released-2526/
-
-# PostgreSQL is a great  publish/subscribe or job server
-  https://webapp.io/blog/postgres-is-the-answer/
-
-
-[[01_PM.TODO}]]
+## "ORDER BY" improved our query times 100x [[{performance.101]]
+* <https://webapp.io/blog/postgres-query-speedups/>
+* KeyPoint:<br/>
+  queries can be sped up by creating right indices,
+  and making sure that they are used.
+
+  ```
+  | Context:
+  |   table
+  |   ci_jobs  <·· inserts whenever a developer commits
+  |   -------      tracks CI pipeline status for that commit.
+  |                VITALLY IMPORTANT: status updates are pushed to XXX on time.
+  | 
+  |   status_change_time timestamp \          <·· when status has been changed
+  |                      NOT NULL DEFAULT NOW(),
+  |   status_notify_time timestamp \          <·· when status has been notified to XXX
+  |                      NOT NULL DEFAULT to_timestamp(0));
+  | 
+  | |listener| Component:  polls ci_job rows which have been changed,
+  |                        but for which XXX hasn't been recently told about
+  | 
+  | UPDATE ci_jobs
+  |   SET status_notify_time = status_change_time
+  |   WHERE id IN (
+  |     SELECT ci_jobs.id FROM ci_jobs
+  |       WHERE ci_jobs.status_notify_time != ci_jobs.status_change_time
+  |         AND ci_jobs.status_notify_time < NOW()-'10 seconds'::interval LIMIT 10
+  |         FOR UPDATE SKIP LOCKED
+  |     )
+  |     RETURNING idAutomatic warnings for slow queries
+  | 
+  | => EXPLAIN ANALYZE
+  |     SELECT ci_jobs.id FROM ci_jobs
+  |       WHERE ci_jobs.status_notify_time != ci_jobs.status_change_time
+  |         AND ci_jobs.status_notify_time < NOW()-'10 seconds'::interval LIMIT 10
+  |         FOR UPDATE SKIP LOCKED;
+  | 
+  |    Paste the result to explain.dalibo.com to see a GUI friendly output.
+  |    It was simple enough to create a SQL Index that would help PostgreSQL
+  |    find such rows faster:
+  ```
+* First FIX Attemp:
+  ```
+  | CREATE INDEX to_be_updated_ci_jobs
+  |   ON ci_jobs(id, status_notify_time ASC)
+  |   WHERE (ci_jobs.status_notify_time != ci_jobs.status_change_time);
+  |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  |   An index can be created CONDITIONALLY for rows not matching a criteria [[keypoint]]
+  |   The index is basically an ordered set of the rows which have
+  |   different status_notify_time and status_change_time fields,
+  |   ordered by status_notify_time ascending.
+  |
+  | FAIL: the index wasn't being used according to EXPLAIN ANALYZE.
+  |
+  | FAILURE HYPOTHESIS: we are choosing 10 arbitrary rows (vs10 oldest)
+  |
+  | By indicating that we want the 10 oldest rows the index is used!!!:
+  ```
+
+  ```
+  |  EXPLAIN ANALYZE
+  |     SELECT ci_jobs.id FROM ci_jobs
+  |       WHERE ci_jobs.status_notify_time != ci_jobs.status_change_time
+  |         AND ci_jobs.status_notify_time < NOW()-'10 seconds'::interval
+  | +       ORDER BY ci_jobs.status_notify_time
+  | +       LIMIT 10
+  |         FOR UPDATE SKIP LOCKED;
+  | Execution time plummeted 2000ms ···> 24ms!!!!.
+  ```
+* NOTE: the query estimator might better understand why this index is so
+  small (very few jobs are being changed, most are for commits long
+  passed) and we'll be able to drop the ORDER BY, but for now it's
+  required for a 100x speed up.
+
+[[performance.101}]]
 
 
