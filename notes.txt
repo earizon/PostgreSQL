@@ -396,7 +396,7 @@
 * Set config Settings for logs, buffers, cahce, ...
   * Re-read changes with *SIGHUP*signal or $*pg_ctl reload*
 
-###  PGConfig: Online postgresql.conf tool: [[{PM.low_code,perfomance]]
+###  PGConfig: Online postgresql.conf tool: [[{PM.low_code,performance]]
 * <https://www.pgconfig.org/>
 
  ```
@@ -422,7 +422,7 @@
 [[}]]
 
 
-### PgTune Config.Wizard [[{PM.low_code,perfomance]]
+### PgTune Config.Wizard [[{PM.low_code,performance]]
 * <https://github.com/gregs1104/pgtune>
 * Python script taking the wimpy default postgresql.conf and
 expanding the cluster server to be as powerful as the hardware it's
